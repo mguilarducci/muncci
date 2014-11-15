@@ -23,7 +23,13 @@ var TransactionSchema = new Schema({
 	user: {
 		type: Schema.ObjectId,
 		ref: 'User'
-	}
+	},
+  to: {
+    type: String,
+    trim: true,
+    default: '',
+    match: [/.+\@.+\..+/, 'Please fill a valid email address']
+  }
 });
 
 mongoose.model('Transaction', TransactionSchema);

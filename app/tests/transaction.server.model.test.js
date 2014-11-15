@@ -27,10 +27,11 @@ describe('Transaction Model Unit Tests:', function() {
 			password: 'password'
 		});
 
-		user.save(function() { 
+		user.save(function() {
 			transaction = new Transaction({
 				name: 'Transaction Name',
-				user: user
+				user: user,
+        to: 'friend@test.com'
 			});
 
 			done();
@@ -45,7 +46,7 @@ describe('Transaction Model Unit Tests:', function() {
 			});
 		});
 
-		it('should be able to show an error when try to save without name', function(done) { 
+		it('should be able to show an error when try to save without name', function(done) {
 			transaction.name = '';
 
 			return transaction.save(function(err) {
