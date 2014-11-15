@@ -11,7 +11,7 @@ var should = require('should'),
 /**
  * Globals
  */
-var credentials, user, transaction;
+var credentials, user, friend, transaction;
 
 /**
  * Transaction routes tests
@@ -35,16 +35,27 @@ describe('Transaction CRUD tests', function() {
 			provider: 'local'
 		});
 
+    // friend
+    friend = new User({
+      firstName: 'Friend',
+      lastName: 'Name',
+      displayName: 'Full Name',
+      email: 'friend@test.com',
+      username: 'friend',
+      password: 'password',
+      provider: 'local'
+    });
+
 		// Save a user to the test db and create new Transaction
 		user.save(function() {
 			transaction = {
 				name: 'Transaction Name',
-        to: 'friend@example.com',
+        to: 'other@example.com',
         value: 100,
         kind: 'pay'
 			};
 
-			done();
+      friend.save(done);
 		});
 	});
 
@@ -166,7 +177,7 @@ describe('Transaction CRUD tests', function() {
 			});
 	});
 
-	it('should be able to get a list of Transactions if not signed in', function(done) {
+	it('should not be able to get a list of Transactions if not signed in', function(done) {
 		// Create new Transaction model instance
 		var transactionObj = new Transaction(transaction);
 
@@ -174,32 +185,53 @@ describe('Transaction CRUD tests', function() {
 		transactionObj.save(function() {
 			// Request Transactions
 			request(app).get('/transactions')
-				.end(function(req, res) {
-					// Set assertion
-					res.body.should.be.an.Array.with.lengthOf(1);
-
-					// Call the assertion callback
-					done();
-				});
-
+        .expect(401)
+        .end(function(transactionSaveErr, transactionSaveRes) {
+          // Call the assertion callback
+          done(transactionSaveErr);
+        });
 		});
 	});
 
+//  it('should be able to get a only your Transactions', function(done) {
+//    var transactionFriend = new Transaction({
+//      user: friend,
+//      name: 'Transaction Name',
+//      to: 'other@example.com',
+//      value: 100,
+//      kind: 'pay'
+//    });
+//
+//    transactionFriend.save(function() {
+//      agent.post('/auth/signin')
+//        .send(credentials)
+//        .expect(200)
+//        .end(function(signinErr, signinRes) {
+//          // Handle signin error
+//          if (signinErr) done(signinErr);
+//
+//          agent.get('/transactions')
+//            .end(function(req, res) {
+//              res.body.should.be.an.Array.with.lengthOf(0);
+//              done();
+//            });
+//        });
+//    });
+//  });
 
-	it('should be able to get a single Transaction if not signed in', function(done) {
+
+	it('should not be able to get a single Transaction if not signed in', function(done) {
 		// Create new Transaction model instance
 		var transactionObj = new Transaction(transaction);
 
 		// Save the Transaction
 		transactionObj.save(function() {
 			request(app).get('/transactions/' + transactionObj._id)
-				.end(function(req, res) {
-					// Set assertion
-					res.body.should.be.an.Object.with.property('name', transaction.name);
-
-					// Call the assertion callback
-					done();
-				});
+        .expect(401)
+        .end(function(transactionSaveErr, transactionSaveRes) {
+          // Call the assertion callback
+          done(transactionSaveErr);
+        });
 		});
 	});
 
