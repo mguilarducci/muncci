@@ -12,7 +12,8 @@
 				by
 				<span data-ng-bind="transaction.user.displayName"></span>
 			</small>
-			<h4 class="list-group-item-heading">{{transaction.kind}} R${{transaction.value}} a {{transaction.to}}</h4>
+		    <h4 class="list-group-item-heading" data-ng-bind="title(transaction, authentication.user)"></h4>
+			<!--<h4 class="list-group-item-heading">{{transaction.kind}} R${{transaction.value}} a {{transaction.to}}</h4>-->
 
             <p class="list-group-item-text" data-ng-bind="transaction.name"></p>
 

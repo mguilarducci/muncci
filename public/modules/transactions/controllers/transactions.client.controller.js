@@ -70,5 +70,19 @@ angular.module('transactions').controller('TransactionsController', ['$scope', '
 				transactionId: $stateParams.transactionId
 			});
 		};
+
+    $scope.title = function(transaction, user) {
+      var to, kind;
+
+      if (transaction.user._id == user._id) {
+        kind = transaction.kind;
+        to = transaction.to;
+      } else {
+        kind = transaction.kind === 'pay' ? 'receive' : 'pay';
+        to = transaction.user.displayName;
+      }
+
+      return kind + ' R$' + transaction.value + ' from/to ' + to;
+    };
 	}
 ]);
