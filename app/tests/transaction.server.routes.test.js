@@ -38,7 +38,8 @@ describe('Transaction CRUD tests', function() {
 		// Save a user to the test db and create new Transaction
 		user.save(function() {
 			transaction = {
-				name: 'Transaction Name'
+				name: 'Transaction Name',
+        to: 'friend@example.com'
 			};
 
 			done();
