@@ -193,32 +193,83 @@ describe('Transaction CRUD tests', function() {
 		});
 	});
 
-//  it('should be able to get a only your Transactions', function(done) {
-//    var transactionFriend = new Transaction({
-//      user: friend,
-//      name: 'Transaction Name',
-//      to: 'other@example.com',
-//      value: 100,
-//      kind: 'pay'
-//    });
-//
-//    transactionFriend.save(function() {
-//      agent.post('/auth/signin')
-//        .send(credentials)
-//        .expect(200)
-//        .end(function(signinErr, signinRes) {
-//          // Handle signin error
-//          if (signinErr) done(signinErr);
-//
-//          agent.get('/transactions')
-//            .end(function(req, res) {
-//              res.body.should.be.an.Array.with.lengthOf(0);
-//              done();
-//            });
-//        });
-//    });
-//  });
+  it('should not be able to get others Transactions', function(done) {
+    var transactionFriend = new Transaction({
+      user: friend,
+      name: 'Transaction Name',
+      to: 'other@example.com',
+      value: 100,
+      kind: 'pay'
+    });
 
+    transactionFriend.save(function() {
+      agent.post('/auth/signin')
+        .send(credentials)
+        .expect(200)
+        .end(function(signinErr, signinRes) {
+          // Handle signin error
+          if (signinErr) done(signinErr);
+
+          agent.get('/transactions')
+            .end(function(req, res) {
+              res.body.should.be.an.Array.with.lengthOf(0);
+              done();
+            });
+        });
+    });
+  });
+
+  it('should be able to get Transactions to me', function(done) {
+    var transactionFriend = new Transaction({
+      user: friend,
+      name: 'Transaction Name',
+      to: user.email,
+      value: 100,
+      kind: 'pay'
+    });
+
+    transactionFriend.save(function() {
+      agent.post('/auth/signin')
+        .send(credentials)
+        .expect(200)
+        .end(function(signinErr, signinRes) {
+          // Handle signin error
+          if (signinErr) done(signinErr);
+
+          agent.get('/transactions')
+            .end(function(req, res) {
+              res.body.should.be.an.Array.with.lengthOf(1);
+              done();
+            });
+        });
+    });
+  });
+
+  it('should be able to get my Transactions', function(done) {
+    var transactionFriend = new Transaction({
+      user: user,
+      name: 'Transaction Name',
+      to: 'email@email.com',
+      value: 100,
+      kind: 'pay'
+    });
+
+    transactionFriend.save(function() {
+      agent.post('/auth/signin')
+        .send(credentials)
+        .expect(200)
+        .end(function(signinErr, signinRes) {
+          // Handle signin error
+          if (signinErr) done(signinErr);
+
+          agent.get('/transactions')
+            .end(function(req, res) {
+              res.body.should.be.an.Array.with.lengthOf(1);
+              done();
+            });
+        });
+    });
+  });
 
 	it('should not be able to get a single Transaction if not signed in', function(done) {
 		// Create new Transaction model instance
