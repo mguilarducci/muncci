@@ -39,7 +39,9 @@ describe('Transaction CRUD tests', function() {
 		user.save(function() {
 			transaction = {
 				name: 'Transaction Name',
-        to: 'friend@example.com'
+        to: 'friend@example.com',
+        value: 100,
+        kind: 'pay'
 			};
 
 			done();

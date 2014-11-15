@@ -31,7 +31,9 @@ describe('Transaction Model Unit Tests:', function() {
 			transaction = new Transaction({
 				name: 'Transaction Name',
 				user: user,
-        to: 'friend@test.com'
+        to: 'friend@test.com',
+        value: 100,
+        kind: 'pay'
 			});
 
 			done();
@@ -54,6 +56,24 @@ describe('Transaction Model Unit Tests:', function() {
 				done();
 			});
 		});
+
+    it('should be able to show an error when try to save without value', function(done) {
+      transaction.value = null;
+
+      return transaction.save(function(err) {
+        should.exist(err);
+        done();
+      });
+    });
+
+    it('should be able to show an error when try to save without kind', function(done) {
+      transaction.kind = '';
+
+      return transaction.save(function(err) {
+        should.exist(err);
+        done();
+      });
+    });
 	});
 
 	afterEach(function(done) { 
