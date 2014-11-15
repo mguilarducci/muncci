@@ -53,7 +53,8 @@
 		it('$scope.find() should create an array with at least one Transaction object fetched from XHR', inject(function(Transactions) {
 			// Create sample Transaction using the Transactions service
 			var sampleTransaction = new Transactions({
-				name: 'New Transaction'
+				name: 'New Transaction',
+        to: 'friend@example.com'
 			});
 
 			// Create a sample Transactions array that includes the new Transaction
@@ -72,9 +73,10 @@
 
 		it('$scope.findOne() should create an array with one Transaction object fetched from XHR using a transactionId URL parameter', inject(function(Transactions) {
 			// Define a sample Transaction object
-			var sampleTransaction = new Transactions({
-				name: 'New Transaction'
-			});
+      var sampleTransaction = new Transactions({
+        name: 'New Transaction',
+        to: 'friend@example.com'
+      });
 
 			// Set the URL parameter
 			$stateParams.transactionId = '525a8422f6d0f87f0e407a33';
@@ -93,17 +95,20 @@
 		it('$scope.create() with valid form data should send a POST request with the form input values and then locate to new object URL', inject(function(Transactions) {
 			// Create a sample Transaction object
 			var sampleTransactionPostData = new Transactions({
-				name: 'New Transaction'
-			});
+				name: 'New Transaction',
+        to: 'friend@example.com'
+      });
 
 			// Create a sample Transaction response
 			var sampleTransactionResponse = new Transactions({
 				_id: '525cf20451979dea2c000001',
-				name: 'New Transaction'
-			});
+				name: 'New Transaction',
+        to: 'friend@example.com'
+      });
 
 			// Fixture mock form input values
 			scope.name = 'New Transaction';
+      scope.to = 'friend@example.com';
 
 			// Set POST response
 			$httpBackend.expectPOST('transactions', sampleTransactionPostData).respond(sampleTransactionResponse);
@@ -123,8 +128,9 @@
 			// Define a sample Transaction put data
 			var sampleTransactionPutData = new Transactions({
 				_id: '525cf20451979dea2c000001',
-				name: 'New Transaction'
-			});
+				name: 'New Transaction',
+        to: 'friend@example.com'
+      });
 
 			// Mock Transaction in scope
 			scope.transaction = sampleTransactionPutData;

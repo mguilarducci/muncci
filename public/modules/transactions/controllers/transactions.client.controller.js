@@ -9,7 +9,8 @@ angular.module('transactions').controller('TransactionsController', ['$scope', '
 		$scope.create = function() {
 			// Create new Transaction object
 			var transaction = new Transactions ({
-				name: this.name
+				name: this.name,
+        to: this.to
 			});
 
 			// Redirect after save
@@ -18,6 +19,7 @@ angular.module('transactions').controller('TransactionsController', ['$scope', '
 
 				// Clear form fields
 				$scope.name = '';
+        $scope.to = '';
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
