@@ -54,7 +54,10 @@
 			// Create sample Transaction using the Transactions service
 			var sampleTransaction = new Transactions({
 				name: 'New Transaction',
-        to: 'friend@example.com'
+        to: 'friend@example.com',
+        kind: 'pay',
+        status: 'created',
+        value: 100
 			});
 
 			// Create a sample Transactions array that includes the new Transaction
@@ -75,7 +78,10 @@
 			// Define a sample Transaction object
       var sampleTransaction = new Transactions({
         name: 'New Transaction',
-        to: 'friend@example.com'
+        to: 'friend@example.com',
+        kind: 'pay',
+        status: 'created',
+        value: 100
       });
 
 			// Set the URL parameter
@@ -96,19 +102,28 @@
 			// Create a sample Transaction object
 			var sampleTransactionPostData = new Transactions({
 				name: 'New Transaction',
-        to: 'friend@example.com'
+        to: 'friend@example.com',
+        kind: 'pay',
+        status: 'created',
+        value: 100
       });
 
 			// Create a sample Transaction response
 			var sampleTransactionResponse = new Transactions({
 				_id: '525cf20451979dea2c000001',
 				name: 'New Transaction',
-        to: 'friend@example.com'
+        to: 'friend@example.com',
+        kind: 'pay',
+        status: 'created',
+        value: 100
       });
 
 			// Fixture mock form input values
 			scope.name = 'New Transaction';
       scope.to = 'friend@example.com';
+      scope.kind = 'pay';
+      scope.status = 'created';
+      scope.value = 100;
 
 			// Set POST response
 			$httpBackend.expectPOST('transactions', sampleTransactionPostData).respond(sampleTransactionResponse);
@@ -129,7 +144,10 @@
 			var sampleTransactionPutData = new Transactions({
 				_id: '525cf20451979dea2c000001',
 				name: 'New Transaction',
-        to: 'friend@example.com'
+        to: 'friend@example.com',
+        kind: 'pay',
+        status: 'created',
+        value: 100
       });
 
 			// Mock Transaction in scope

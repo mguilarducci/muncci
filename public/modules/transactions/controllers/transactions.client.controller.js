@@ -10,7 +10,10 @@ angular.module('transactions').controller('TransactionsController', ['$scope', '
 			// Create new Transaction object
 			var transaction = new Transactions ({
 				name: this.name,
-        to: this.to
+        to: this.to,
+        kind: this.kind,
+        status: this.status,
+        value: this.value
 			});
 
 			// Redirect after save
@@ -20,6 +23,9 @@ angular.module('transactions').controller('TransactionsController', ['$scope', '
 				// Clear form fields
 				$scope.name = '';
         $scope.to = '';
+        $scope.kind = '';
+        $scope.status = '';
+        $scope.value = '';
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});

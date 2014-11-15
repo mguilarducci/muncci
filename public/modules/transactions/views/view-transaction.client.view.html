@@ -1,6 +1,6 @@
 <section data-ng-controller="TransactionsController" data-ng-init="findOne()">
 	<div class="page-header">
-		<h1>Pagar VALOR a {{transaction.to}}</h1>
+		<h1>{{transaction.kind}} R${{transaction.value}} a {{transaction.to}}</h1>
 	</div>
 	<div class="pull-right" data-ng-show="((authentication.user) && (authentication.user._id == transaction.user._id))">
 		<a class="btn btn-primary" href="/#!/transactions/{{transaction._id}}/edit">
