@@ -6,6 +6,18 @@
         <form class="form-horizontal" data-ng-submit="update()" novalidate>
             <fieldset>
                 <div class="form-group">
+                    <label class="control-label" for="status">Status</label>
+                    <div class="controls">
+                        <select data-ng-model="transaction.status" id="status" class="form-control" required>
+                            <option value="created">Criada</option>
+                            <option value="revoked">Rejeitada</option>
+                            <option value="accepted">Aceita</option>
+                            <option value="paid">Paga</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label class="control-label" for="name">Nome</label>
                     <div class="controls">
                         <input type="text" data-ng-model="transaction.name" id="name" class="form-control" placeholder="Name" required>
