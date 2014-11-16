@@ -3,6 +3,10 @@
 		<h1 data-ng-bind="title(transaction, authentication.user)"></h1>
 	</div>
 	<div class="pull-right">
+        <a class="btn btn-primary" data-ng-click="accept();" data-ng-show="canAccept(transaction, authentication.user)">
+            <i class="glyphicon glyphicon-thumbs-up"></i>
+        </a>
+
         <a class="btn btn-primary" data-ng-click="revoke();" data-ng-show="canRevoke(transaction, authentication.user)">
             <i class="glyphicon glyphicon-ban-circle"></i>
         </a>
