@@ -142,6 +142,9 @@ module.exports = function(grunt) {
 		}
 	});
 
+  // time
+  require('time-grunt')(grunt);
+
 	// Load NPM tasks
 	require('load-grunt-tasks')(grunt);
 
