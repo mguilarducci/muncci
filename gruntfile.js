@@ -139,28 +139,11 @@ module.exports = function(grunt) {
 			unit: {
 				configFile: 'karma.conf.js'
 			}
-		},
-    coveralls: {
-      options: {
-        // LCOV coverage file relevant to every target
-        src: 'coverage-results/lcov.info',
-
-        // When true, grunt-coveralls will only print a warning rather than
-        // an error, to prevent CI builds from failing unnecessarily (e.g. if
-        // coveralls.io is down). Optional, defaults to false.
-        force: false
-      },
-      your_target: {
-        // Target-specific LCOV coverage file
-        src: 'coverage-results/extra-results-*.info'
-      }
     }
 	});
 
 	// Load NPM tasks
 	require('load-grunt-tasks')(grunt);
-
-  grunt.loadNpmTasks('grunt-coveralls');
 
 	// Making grunt default to force in order not to break the project.
 	grunt.option('force', true);
@@ -190,5 +173,5 @@ module.exports = function(grunt) {
 	grunt.registerTask('build', ['lint', 'loadConfig', 'ngAnnotate', 'uglify', 'cssmin']);
 
 	// Test task.
-	grunt.registerTask('test', ['lint', 'env:test', 'mochaTest', 'karma:unit', 'coveralls']);
+	grunt.registerTask('test', ['lint', 'env:test', 'mochaTest', 'karma:unit']);
 };
