@@ -44,15 +44,15 @@ TransactionSchema.statics.findMy = function(user, cb) {
     { 'to': user.email }
   ];
 
-  if (user.providerData.email) {
+  if (user.providerData) {
     or.push({ 'to': user.providerData.email });
   }
 
-  if (user.additionalProvidersData.google) {
+  if (user.additionalProvidersData && user.additionalProvidersData.google) {
     or.push({ 'to': user.additionalProvidersData.google.email });
   }
 
-  if (user.additionalProvidersData.facebook) {
+  if (user.additionalProvidersData && user.additionalProvidersData.facebook) {
     or.push({ 'to': user.additionalProvidersData.facebook.email });
   }
 
