@@ -7,11 +7,11 @@
             <i class="glyphicon glyphicon-thumbs-up"></i>
         </a>
 
-        <a class="btn btn-primary" data-ng-click="revoke();" data-ng-show="canRevoke(transaction, authentication.user)">
-            <i class="glyphicon glyphicon-ban-circle"></i>
+        <a class="btn btn-danger" data-ng-click="revoke();" data-ng-show="canRevoke(transaction, authentication.user)">
+            <i class="glyphicon glyphicon-thumbs-down"></i>
         </a>
 
-		<a class="btn btn-primary" href="/#!/transactions/{{transaction._id}}/edit">
+		<a class="btn btn-default" href="/#!/transactions/{{transaction._id}}/edit">
 			<i class="glyphicon glyphicon-edit"></i>
 		</a>
 		<a class="btn btn-primary" data-ng-click="remove();"
