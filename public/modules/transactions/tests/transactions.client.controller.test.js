@@ -363,5 +363,30 @@
       // Test scope value
       expect(scope.transaction.status).toEqualData('accepted');
     }));
+
+    it('$scope.accept() should update a valid Transaction', inject(function(Transactions) {
+      // Define a sample Transaction put data
+      var sampleTransactionPutData = new Transactions({
+        _id: '525cf20451979dea2c000001',
+        name: 'New Transaction',
+        to: 'friend@example.com',
+        kind: 'pay',
+        status: 'created',
+        value: 100
+      });
+
+      // Mock Transaction in scope
+      scope.transaction = sampleTransactionPutData;
+
+      // Set PUT response
+      $httpBackend.expectPUT(/transactions\/([0-9a-fA-F]{24})$/).respond();
+
+      // Run controller functionality
+      scope.pay();
+      $httpBackend.flush();
+
+      // Test scope value
+      expect(scope.transaction.status).toEqualData('paid');
+    }));
 	});
 }());

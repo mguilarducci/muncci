@@ -123,5 +123,10 @@ angular.module('transactions').controller('TransactionsController', ['$scope', '
       $scope.transaction.status = 'accepted';
       $scope.update();
     };
+
+    $scope.pay = function() {
+      $scope.transaction.status = 'paid';
+      $scope.update();
+    };
 	}
 ]);
