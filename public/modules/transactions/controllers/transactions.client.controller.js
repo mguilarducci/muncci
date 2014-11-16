@@ -96,5 +96,16 @@ angular.module('transactions').controller('TransactionsController', ['$scope', '
 
       return kind + ' R$' + transaction.value + ' ' +  fromTo + ' ' + to;
     };
+
+    $scope.canRevoke = function(transaction, user) {
+      return transaction.user._id !== user._id &&
+        transaction.to === user.email &&
+        transaction.status === 'created';
+    };
+
+    $scope.revoke = function() {
+      $scope.transaction.status = 'revoked';
+      $scope.update();
+    };
 	}
 ]);
