@@ -128,5 +128,23 @@ angular.module('transactions').controller('TransactionsController', ['$scope', '
       $scope.transaction.status = 'paid';
       $scope.update();
     };
+
+    $scope.rowClass = function(transaction, user) {
+      var classe;
+
+      switch (transaction.status) {
+        case 'revoked':
+          classe = 'list-group-item-danger';
+          break;
+        case 'paid':
+          classe = 'list-group-item-success';
+          break;
+        case 'created':
+          classe = (transaction.to === user.email) ? 'list-group-item-info' : '';
+          break;
+      }
+
+      return classe;
+    };
 	}
 ]);
