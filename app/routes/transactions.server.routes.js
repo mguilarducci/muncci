@@ -11,7 +11,7 @@ module.exports = function(app) {
 
 	app.route('/transactions/:transactionId')
 		.get(users.requiresLogin, transactions.read)
-		.put(users.requiresLogin, transactions.hasAuthorization, transactions.update)
+		.put(users.requiresLogin, transactions.hasAuthorization, transactions.canPay, transactions.update)
 		.delete(users.requiresLogin, transactions.hasAuthorization, transactions.delete);
 
 	// Finish by binding the Transaction middleware

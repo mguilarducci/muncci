@@ -37,7 +37,7 @@ exports.read = function(req, res) {
  * Update a Transaction
  */
 exports.update = function(req, res) {
-	var transaction = req.transaction ;
+	var transaction = req.transaction;
 
 	transaction = _.extend(transaction , req.body);
 
@@ -109,4 +109,16 @@ exports.hasAuthorization = function(req, res, next) {
 		return res.status(403).send('User is not authorized');
 	}
 	next();
+};
+
+exports.canPay = function(req, res, next) {
+  var transaction = req.transaction,
+    user = req.user,
+    canPay = (transaction.user._id === user._id || transaction.to === user.email) &&
+      (transaction.status === 'created' || transaction.status === 'accepted');
+
+  if (req.body.status === 'paid' && !canPay) {
+    return res.status(400).send('Can\'t pay a revoked transaction');
+  }
+  next();
 };
