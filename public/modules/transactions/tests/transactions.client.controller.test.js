@@ -292,6 +292,28 @@
       expect(scope.canRevoke(transaction, user)).toBe(true);
     }));
 
+    it('$scope.canPay should show return true when transaction is created', inject(function(Transactions) {
+      var transaction = new Transactions({
+        _id: '525cf20451979dea2c000001',
+        name: 'New Transaction',
+        to: 'friend@example.com',
+        kind: 'pay',
+        status: 'created',
+        value: 100,
+        user: {
+          _id: '987654321',
+          displayName: 'Matheus'
+        }
+      });
+
+      var user = {
+        _id: '123456789',
+        email: 'friend@example.com'
+      };
+
+      expect(scope.canRevoke(transaction, user)).toBe(true);
+    }));
+
     it('$scope.revoke() should update a valid Transaction', inject(function(Transactions) {
       // Define a sample Transaction put data
       var sampleTransactionPutData = new Transactions({

@@ -109,6 +109,11 @@ angular.module('transactions').controller('TransactionsController', ['$scope', '
         (transaction.status === 'created' || transaction.status === 'revoked');
     };
 
+    $scope.canPay = function(transaction, user) {
+      return (transaction.user._id === user._id || transaction.to === user.email) &&
+        (transaction.status === 'created' || transaction.status === 'accepted');
+    };
+
     $scope.revoke = function() {
       $scope.transaction.status = 'revoked';
       $scope.update();
