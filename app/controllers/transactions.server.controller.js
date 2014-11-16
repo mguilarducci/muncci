@@ -73,12 +73,7 @@ exports.delete = function(req, res) {
  * List of Transactions
  */
 exports.list = function(req, res) {
-	Transaction.find({
-    $or: [
-      { user: req.user },
-      { 'to': req.user.email }
-    ]
-  }).sort('-created').populate('user', 'displayName').exec(function(err, transactions) {
+  Transaction.findMy(req.user, function(err, transactions) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)

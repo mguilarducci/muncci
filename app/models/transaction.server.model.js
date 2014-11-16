@@ -38,4 +38,25 @@ var TransactionSchema = new Schema({
   status: { type: String, enum: statusList, default: 'created' }
 });
 
+TransactionSchema.statics.findMy = function(user, cb) {
+  var or = [
+    { user: user },
+    { 'to': user.email }
+  ];
+
+  if (user.providerData.email) {
+    or.push({ 'to': user.providerData.email });
+  }
+
+  if (user.additionalProvidersData.google) {
+    or.push({ 'to': user.additionalProvidersData.google.email });
+  }
+
+  if (user.additionalProvidersData.facebook) {
+    or.push({ 'to': user.additionalProvidersData.facebook.email });
+  }
+
+  this.find({ $or: or }).sort('-created').populate('user', 'displayName').exec(cb);
+};
+
 mongoose.model('Transaction', TransactionSchema);
