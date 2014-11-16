@@ -183,5 +183,47 @@
 			// Test array after successful delete
 			expect(scope.transactions.length).toBe(0);
 		}));
+
+    it('$scope.title should show correct title when the current user did not create it', inject(function(Transactions) {
+      var transaction = new Transactions({
+        _id: '525cf20451979dea2c000001',
+        name: 'New Transaction',
+        to: 'friend@example.com',
+        kind: 'pay',
+        status: 'created',
+        value: 100,
+        user: {
+          _id: '987654321',
+          displayName: 'Matheus'
+        }
+      });
+
+      var user = {
+        _id: '123456789'
+      };
+
+      expect(scope.title(transaction, user)).toBe('Receber R$100 de Matheus');
+    }));
+
+    it('$scope.title should show correct title when the current user created it', inject(function(Transactions) {
+      var transaction = new Transactions({
+        _id: '525cf20451979dea2c000001',
+        name: 'New Transaction',
+        to: 'friend@example.com',
+        kind: 'pay',
+        status: 'created',
+        value: 100,
+        user: {
+          _id: '123456789',
+          displayName: 'Matheus'
+        }
+      });
+
+      var user = {
+        _id: '123456789'
+      };
+
+      expect(scope.title(transaction, user)).toBe('Pagar R$100 a friend@example.com');
+    }));
 	});
 }());
