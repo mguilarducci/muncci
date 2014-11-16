@@ -72,17 +72,29 @@ angular.module('transactions').controller('TransactionsController', ['$scope', '
 		};
 
     $scope.title = function(transaction, user) {
-      var to, kind;
+      var to, kind, fromTo;
 
       if (transaction.user._id == user._id) {
-        kind = transaction.kind;
+        if (transaction.kind === 'pay') {
+          kind = 'Pagar';
+          fromTo = 'a';
+        } else {
+          kind = 'Receber';
+          fromTo = 'de';
+        }
         to = transaction.to;
       } else {
-        kind = transaction.kind === 'pay' ? 'receive' : 'pay';
+        if (transaction.kind === 'pay') {
+          kind = 'Receber';
+          fromTo = 'de';
+        } else {
+          kind = 'Pagar';
+          fromTo = 'a';
+        }
         to = transaction.user.displayName;
       }
 
-      return kind + ' R$' + transaction.value + ' from/to ' + to;
+      return kind + ' R$' + transaction.value + ' ' +  fromTo + ' ' + to;
     };
 	}
 ]);
