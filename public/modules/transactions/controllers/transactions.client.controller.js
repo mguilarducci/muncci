@@ -74,7 +74,7 @@ angular.module('transactions').controller('TransactionsController', ['$scope', '
     $scope.title = function(transaction, user) {
       var to, kind, fromTo;
 
-      if (transaction.user._id == user._id) {
+      if (transaction.user._id === user._id) {
         if (transaction.kind === 'pay') {
           kind = 'Pagar';
           fromTo = 'a';
