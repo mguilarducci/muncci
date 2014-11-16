@@ -109,7 +109,7 @@ exports.hasAuthorization = function(req, res, next) {
 exports.canPay = function(req, res, next) {
   var transaction = req.transaction,
     user = req.user,
-    canPay = (transaction.user._id === user._id || transaction.to === user.email) &&
+    canPay = (transaction.user.id === user.id || transaction.to === user.email) &&
       (transaction.status === 'created' || transaction.status === 'accepted');
 
   if (req.body.status === 'paid' && !canPay) {
