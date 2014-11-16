@@ -289,7 +289,7 @@
         email: 'friend@example.com'
       };
 
-      expect(scope.canRevoke(transaction, user)).toBe(true);
+      expect(scope.canAccept(transaction, user)).toBe(true);
     }));
 
     it('$scope.canPay should show return true when transaction is created', inject(function(Transactions) {
