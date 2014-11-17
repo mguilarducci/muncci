@@ -44,123 +44,15 @@ angular.element(document).ready(function() {
 'use strict';
 
 // Use Applicaion configuration module to register a new module
-ApplicationConfiguration.registerModule('articles');
+ApplicationConfiguration.registerModule('core');
 'use strict';
 
-// Use Applicaion configuration module to register a new module
-ApplicationConfiguration.registerModule('core');
+// Use applicaion configuration module to register a new module
+ApplicationConfiguration.registerModule('transactions');
 'use strict';
 
 // Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('users');
-'use strict';
-
-// Configuring the Articles module
-angular.module('articles').run(['Menus',
-	function(Menus) {
-		// Set top bar menu items
-		Menus.addMenuItem('topbar', 'Articles', 'articles', 'dropdown', '/articles(/create)?');
-		Menus.addSubMenuItem('topbar', 'articles', 'List Articles', 'articles');
-		Menus.addSubMenuItem('topbar', 'articles', 'New Article', 'articles/create');
-	}
-]);
-'use strict';
-
-// Setting up route
-angular.module('articles').config(['$stateProvider',
-	function($stateProvider) {
-		// Articles state routing
-		$stateProvider.
-		state('listArticles', {
-			url: '/articles',
-			templateUrl: 'modules/articles/views/list-articles.client.view.html'
-		}).
-		state('createArticle', {
-			url: '/articles/create',
-			templateUrl: 'modules/articles/views/create-article.client.view.html'
-		}).
-		state('viewArticle', {
-			url: '/articles/:articleId',
-			templateUrl: 'modules/articles/views/view-article.client.view.html'
-		}).
-		state('editArticle', {
-			url: '/articles/:articleId/edit',
-			templateUrl: 'modules/articles/views/edit-article.client.view.html'
-		});
-	}
-]);
-'use strict';
-
-angular.module('articles').controller('ArticlesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Articles',
-	function($scope, $stateParams, $location, Authentication, Articles) {
-		$scope.authentication = Authentication;
-
-		$scope.create = function() {
-			var article = new Articles({
-				title: this.title,
-				content: this.content
-			});
-			article.$save(function(response) {
-				$location.path('articles/' + response._id);
-
-				$scope.title = '';
-				$scope.content = '';
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
-		};
-
-		$scope.remove = function(article) {
-			if (article) {
-				article.$remove();
-
-				for (var i in $scope.articles) {
-					if ($scope.articles[i] === article) {
-						$scope.articles.splice(i, 1);
-					}
-				}
-			} else {
-				$scope.article.$remove(function() {
-					$location.path('articles');
-				});
-			}
-		};
-
-		$scope.update = function() {
-			var article = $scope.article;
-
-			article.$update(function() {
-				$location.path('articles/' + article._id);
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
-		};
-
-		$scope.find = function() {
-			$scope.articles = Articles.query();
-		};
-
-		$scope.findOne = function() {
-			$scope.article = Articles.get({
-				articleId: $stateParams.articleId
-			});
-		};
-	}
-]);
-'use strict';
-
-//Articles service used for communicating with the articles REST endpoints
-angular.module('articles').factory('Articles', ['$resource',
-	function($resource) {
-		return $resource('articles/:articleId', {
-			articleId: '@_id'
-		}, {
-			update: {
-				method: 'PUT'
-			}
-		});
-	}
-]);
 'use strict';
 
 // Setting up route
@@ -368,6 +260,215 @@ angular.module('core').service('Menus', [
 
 		//Adding the topbar menu
 		this.addMenu('topbar');
+	}
+]);
+'use strict';
+
+// Configuring the Articles module
+angular.module('transactions').run(['Menus',
+	function(Menus) {
+		// Set top bar menu items
+		Menus.addMenuItem('topbar', 'Transactions', 'transactions', 'dropdown', '/transactions(/create)?');
+		Menus.addSubMenuItem('topbar', 'transactions', 'List Transactions', 'transactions');
+		Menus.addSubMenuItem('topbar', 'transactions', 'New Transaction', 'transactions/create');
+	}
+]);
+'use strict';
+
+//Setting up route
+angular.module('transactions').config(['$stateProvider',
+	function($stateProvider) {
+		// Transactions state routing
+		$stateProvider.
+		state('listTransactions', {
+			url: '/transactions',
+			templateUrl: 'modules/transactions/views/list-transactions.client.view.html'
+		}).
+		state('createTransaction', {
+			url: '/transactions/create',
+			templateUrl: 'modules/transactions/views/create-transaction.client.view.html'
+		}).
+		state('viewTransaction', {
+			url: '/transactions/:transactionId',
+			templateUrl: 'modules/transactions/views/view-transaction.client.view.html'
+		}).
+		state('editTransaction', {
+			url: '/transactions/:transactionId/edit',
+			templateUrl: 'modules/transactions/views/edit-transaction.client.view.html'
+		});
+	}
+]);
+'use strict';
+
+// Transactions controller
+angular.module('transactions').controller('TransactionsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Transactions',
+	function($scope, $stateParams, $location, Authentication, Transactions) {
+		$scope.authentication = Authentication;
+
+		// Create new Transaction
+		$scope.create = function() {
+			// Create new Transaction object
+			var transaction = new Transactions ({
+				name: this.name,
+        to: this.to,
+        kind: this.kind,
+        status: this.status,
+        value: this.value
+			});
+
+			// Redirect after save
+			transaction.$save(function(response) {
+				$location.path('transactions/' + response._id);
+
+				// Clear form fields
+				$scope.name = '';
+        $scope.to = '';
+        $scope.kind = '';
+        $scope.status = '';
+        $scope.value = '';
+			}, function(errorResponse) {
+				$scope.error = errorResponse.data.message;
+			});
+		};
+
+		// Remove existing Transaction
+		$scope.remove = function(transaction) {
+			if ( transaction ) { 
+				transaction.$remove();
+
+				for (var i in $scope.transactions) {
+					if ($scope.transactions [i] === transaction) {
+						$scope.transactions.splice(i, 1);
+					}
+				}
+			} else {
+				$scope.transaction.$remove(function() {
+					$location.path('transactions');
+				});
+			}
+		};
+
+		// Update existing Transaction
+		$scope.update = function() {
+			var transaction = $scope.transaction;
+
+			transaction.$update(function() {
+				$location.path('transactions');
+			}, function(errorResponse) {
+				$scope.error = errorResponse.data.message;
+			});
+		};
+
+		// Find a list of Transactions
+		$scope.find = function() {
+			$scope.transactions = Transactions.query();
+		};
+
+		// Find existing Transaction
+		$scope.findOne = function() {
+			$scope.transaction = Transactions.get({ 
+				transactionId: $stateParams.transactionId
+			});
+		};
+
+    $scope.title = function(transaction, user) {
+      var to, kind, fromTo;
+
+      if (transaction.user._id === user._id) {
+        if (transaction.kind === 'pay') {
+          kind = 'Pagar';
+          fromTo = 'a';
+        } else {
+          kind = 'Receber';
+          fromTo = 'de';
+        }
+        to = transaction.to;
+      } else {
+        if (transaction.kind === 'pay') {
+          kind = 'Receber';
+          fromTo = 'de';
+        } else {
+          kind = 'Pagar';
+          fromTo = 'a';
+        }
+        to = transaction.user.displayName;
+      }
+
+      return kind + ' R$' + transaction.value + ' ' +  fromTo + ' ' + to;
+    };
+
+    $scope.canRevoke = function(transaction, user) {
+      return transaction.user._id !== user._id &&
+        transaction.to === user.email &&
+        transaction.status === 'created';
+    };
+
+    $scope.canAccept = function(transaction, user) {
+      return transaction.user._id !== user._id &&
+        transaction.to === user.email &&
+        (transaction.status === 'created' || transaction.status === 'revoked');
+    };
+
+    $scope.canPay = function(transaction, user) {
+      return (transaction.user._id === user._id || transaction.to === user.email) &&
+        (transaction.status === 'created' || transaction.status === 'accepted');
+    };
+
+    $scope.revoke = function(transaction) {
+      if (transaction) {
+        $scope.transaction = transaction;
+      }
+      $scope.transaction.status = 'revoked';
+      $scope.update();
+    };
+
+    $scope.accept = function(transaction) {
+      if (transaction) {
+        $scope.transaction = transaction;
+      }
+      $scope.transaction.status = 'accepted';
+      $scope.update();
+    };
+
+    $scope.pay = function(transaction) {
+      if (transaction) {
+        $scope.transaction = transaction;
+      }
+      $scope.transaction.status = 'paid';
+      $scope.update();
+    };
+
+    $scope.rowClass = function(transaction, user) {
+      var classe;
+
+      switch (transaction.status) {
+        case 'revoked':
+          classe = 'list-group-item-danger';
+          break;
+        case 'paid':
+          classe = 'list-group-item-success';
+          break;
+        case 'created':
+          classe = (transaction.to === user.email) ? 'list-group-item-info' : '';
+          break;
+      }
+
+      return classe;
+    };
+	}
+]);
+
+'use strict';
+
+//Transactions service used to communicate Transactions REST endpoints
+angular.module('transactions').factory('Transactions', ['$resource',
+	function($resource) {
+		return $resource('transactions/:transactionId', { transactionId: '@_id'
+		}, {
+			update: {
+				method: 'PUT'
+			}
+		});
 	}
 ]);
 'use strict';
