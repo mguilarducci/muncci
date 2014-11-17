@@ -161,7 +161,7 @@
 			$httpBackend.flush();
 
 			// Test URL location to new object
-			expect($location.path()).toBe('/transactions/' + sampleTransactionPutData._id);
+			expect($location.path()).toBe('/transactions');
 		}));
 
 		it('$scope.remove() should send a DELETE request with a valid transactionId and remove the Transaction from the scope', inject(function(Transactions) {

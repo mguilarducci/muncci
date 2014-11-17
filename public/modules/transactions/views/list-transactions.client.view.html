@@ -3,11 +3,30 @@
         <h1>Transactions</h1>
     </div>
     <div class="list-group">
-        <a data-ng-repeat="transaction in transactions"
+        <li data-ng-repeat="transaction in transactions"
            data-ng-href="#!/transactions/{{transaction._id}}"
            class="list-group-item {{rowClass(transaction, authentication.user)}}">
 
+
             <span class="badge">{{transaction.status}}</span>
+
+            <div class="list-group-item-text">
+                <a class="btn btn-primary" data-ng-click="accept(transaction);" data-ng-show="canAccept(transaction, authentication.user)">
+                    <i class="glyphicon glyphicon-thumbs-up"></i>
+                </a>
+
+                <a class="btn btn-danger" data-ng-click="revoke(transaction);" data-ng-show="canRevoke(transaction, authentication.user)">
+                    <i class="glyphicon glyphicon-thumbs-down"></i>
+                </a>
+
+                <a class="btn btn-success" data-ng-click="pay(transaction);" data-ng-show="canPay(transaction, authentication.user)">
+                    <i class="glyphicon glyphicon-check"></i> Pago!
+                </a>
+
+                <a class="btn btn-default" href="/#!/transactions/{{transaction._id}}/edit">
+                    <i class="glyphicon glyphicon-edit"></i> Editar
+                </a>
+            </div>
 
             <small class="list-group-item-text">
 				Posted on
@@ -20,7 +39,9 @@
 
             <p class="list-group-item-text" data-ng-bind="transaction.name"></p>
 
-        </a>
+
+
+        </li>
     </div>
     <div class="alert alert-warning text-center" data-ng-hide="!transactions.$resolved || transactions.length">
     	No Transactions yet, why don't you <a href="/#!/transactions/create">create one</a>?

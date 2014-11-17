@@ -53,7 +53,7 @@ angular.module('transactions').controller('TransactionsController', ['$scope', '
 			var transaction = $scope.transaction;
 
 			transaction.$update(function() {
-				$location.path('transactions/' + transaction._id);
+				$location.path('transactions');
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
@@ -114,17 +114,26 @@ angular.module('transactions').controller('TransactionsController', ['$scope', '
         (transaction.status === 'created' || transaction.status === 'accepted');
     };
 
-    $scope.revoke = function() {
+    $scope.revoke = function(transaction) {
+      if (transaction) {
+        $scope.transaction = transaction;
+      }
       $scope.transaction.status = 'revoked';
       $scope.update();
     };
 
-    $scope.accept = function() {
+    $scope.accept = function(transaction) {
+      if (transaction) {
+        $scope.transaction = transaction;
+      }
       $scope.transaction.status = 'accepted';
       $scope.update();
     };
 
-    $scope.pay = function() {
+    $scope.pay = function(transaction) {
+      if (transaction) {
+        $scope.transaction = transaction;
+      }
       $scope.transaction.status = 'paid';
       $scope.update();
     };
