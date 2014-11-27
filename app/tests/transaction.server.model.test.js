@@ -35,7 +35,8 @@ describe('Transaction Model Unit Tests:', function() {
         to: 'friend@test.com',
         value: 100,
         kind: 'pay',
-        date: moment('1988-05-09')
+        date: moment('1988-05-09'),
+        dueDate: moment('1988-05-09')
 			});
 
 			done();

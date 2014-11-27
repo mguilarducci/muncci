@@ -108,7 +108,8 @@
         kind: 'pay',
         status: 'created',
         value: 100,
-        date: '1988-05-09'
+        date: '1988-05-09',
+        dueDate: '1988-05-09'
       });
 
 			// Create a sample Transaction response
@@ -119,7 +120,8 @@
         kind: 'pay',
         status: 'created',
         value: 100,
-        date: '1988-05-09'
+        date: '1988-05-09',
+        dueDate: '1988-05-09'
       });
 
 			// Fixture mock form input values
@@ -129,6 +131,7 @@
       scope.status = 'created';
       scope.value = 100;
       scope.date = '1988-05-09';
+      scope.dueDate = '1988-05-09';
 
 			// Set POST response
 			$httpBackend.expectPOST('transactions', sampleTransactionPostData).respond(sampleTransactionResponse);
@@ -153,7 +156,8 @@
         kind: 'pay',
         status: 'created',
         value: 100,
-        date: '1988-05-09'
+        date: '1988-05-09',
+        dueDate: '1988-05-09'
       });
 
 			// Mock Transaction in scope

@@ -44,6 +44,9 @@ var TransactionSchema = new Schema({
   date: {
     type: Date,
     default: Date.now
+  },
+  dueDate: {
+    type: Date
   }
 });
 
