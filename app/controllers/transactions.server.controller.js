@@ -5,6 +5,7 @@
  */
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
+  moment = require('moment'),
 	Transaction = mongoose.model('Transaction'),
 	_ = require('lodash');
 
@@ -14,6 +15,10 @@ var mongoose = require('mongoose'),
 exports.create = function(req, res) {
 	var transaction = new Transaction(req.body);
 	transaction.user = req.user;
+
+  if (req.body.date && req.body.date !== '') {
+    transaction.date = moment(req.body.date);
+  }
 
 	transaction.save(function(err) {
 		if (err) {
@@ -40,6 +45,9 @@ exports.update = function(req, res) {
 	var transaction = req.transaction;
 
 	transaction = _.extend(transaction , req.body);
+  if (req.body.date && req.body.date !== '') {
+    transaction.date = moment(req.body.date);
+  }
 
 	transaction.save(function(err) {
 		if (err) {

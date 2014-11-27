@@ -52,7 +52,8 @@ describe('Transaction CRUD tests', function() {
 				name: 'Transaction Name',
         to: 'other@example.com',
         value: 100,
-        kind: 'pay'
+        kind: 'pay',
+        date: '1988-05-09'
 			};
 
       friend.save(done);

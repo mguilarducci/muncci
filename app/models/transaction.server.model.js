@@ -4,6 +4,7 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
+  moment = require('moment'),
 	Schema = mongoose.Schema;
 
 var statusList = 'created revoked accepted paid'.split(' '),
@@ -23,6 +24,10 @@ var TransactionSchema = new Schema({
 		type: Date,
 		default: Date.now
 	},
+  updated: {
+    type: Date,
+    default: Date.now
+  },
 	user: {
 		type: Schema.ObjectId,
 		ref: 'User'
@@ -33,9 +38,13 @@ var TransactionSchema = new Schema({
     default: '',
     match: [/.+\@.+\..+/, 'Please fill a valid email address']
   },
-  value: { type: Number, required: true }, // cents
+  value: { type: Number, required: true },
   kind: { type: String, enum: kinds },
-  status: { type: String, enum: statusList, default: 'created' }
+  status: { type: String, enum: statusList, default: 'created' },
+  date: {
+    type: Date,
+    default: Date.now
+  }
 });
 
 TransactionSchema.statics.findMy = function(user, cb) {
@@ -58,5 +67,10 @@ TransactionSchema.statics.findMy = function(user, cb) {
 
   this.find({ $or: or }).sort('-created').populate('user', 'displayName').exec(cb);
 };
+
+TransactionSchema.pre('save', function(next) {
+  this.updated = moment();
+  next();
+});
 
 mongoose.model('Transaction', TransactionSchema);

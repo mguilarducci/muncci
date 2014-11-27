@@ -57,7 +57,8 @@
         to: 'friend@example.com',
         kind: 'pay',
         status: 'created',
-        value: 100
+        value: 100,
+        date: Date.now
 			});
 
 			// Create a sample Transactions array that includes the new Transaction
@@ -81,7 +82,8 @@
         to: 'friend@example.com',
         kind: 'pay',
         status: 'created',
-        value: 100
+        value: 100,
+        date: Date.now
       });
 
 			// Set the URL parameter
@@ -105,7 +107,8 @@
         to: 'friend@example.com',
         kind: 'pay',
         status: 'created',
-        value: 100
+        value: 100,
+        date: '1988-05-09'
       });
 
 			// Create a sample Transaction response
@@ -115,7 +118,8 @@
         to: 'friend@example.com',
         kind: 'pay',
         status: 'created',
-        value: 100
+        value: 100,
+        date: '1988-05-09'
       });
 
 			// Fixture mock form input values
@@ -124,6 +128,7 @@
       scope.kind = 'pay';
       scope.status = 'created';
       scope.value = 100;
+      scope.date = '1988-05-09';
 
 			// Set POST response
 			$httpBackend.expectPOST('transactions', sampleTransactionPostData).respond(sampleTransactionResponse);
@@ -147,7 +152,8 @@
         to: 'friend@example.com',
         kind: 'pay',
         status: 'created',
-        value: 100
+        value: 100,
+        date: '1988-05-09'
       });
 
 			// Mock Transaction in scope

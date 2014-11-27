@@ -5,6 +5,7 @@
  */
 var should = require('should'),
 	mongoose = require('mongoose'),
+  moment = require('moment'),
 	User = mongoose.model('User'),
 	Transaction = mongoose.model('Transaction');
 
@@ -33,7 +34,8 @@ describe('Transaction Model Unit Tests:', function() {
 				user: user,
         to: 'friend@test.com',
         value: 100,
-        kind: 'pay'
+        kind: 'pay',
+        date: moment('1988-05-09')
 			});
 
 			done();
