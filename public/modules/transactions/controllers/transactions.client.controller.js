@@ -14,7 +14,8 @@ angular.module('transactions').controller('TransactionsController', ['$scope', '
         kind: this.kind,
         status: this.status,
         value: this.value,
-        date: this.date
+        date: this.date,
+        dueDate: this.dueDate
 			});
 
 			// Redirect after save
@@ -28,6 +29,7 @@ angular.module('transactions').controller('TransactionsController', ['$scope', '
         $scope.status = '';
         $scope.value = '';
         $scope.date = '';
+        $scope.dueDate = '';
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});

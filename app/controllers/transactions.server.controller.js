@@ -20,6 +20,10 @@ exports.create = function(req, res) {
     transaction.date = moment(req.body.date);
   }
 
+  if (req.body.dueDate && req.body.dueDate !== '') {
+    transaction.dueDate = moment(req.body.dueDate);
+  }
+
 	transaction.save(function(err) {
 		if (err) {
 			return res.status(400).send({
@@ -47,6 +51,10 @@ exports.update = function(req, res) {
 	transaction = _.extend(transaction , req.body);
   if (req.body.date && req.body.date !== '') {
     transaction.date = moment(req.body.date);
+  }
+
+  if (req.body.dueDate && req.body.dueDate !== '') {
+    transaction.dueDate = moment(req.body.dueDate);
   }
 
 	transaction.save(function(err) {
@@ -99,7 +107,7 @@ exports.transactionByID = function(req, res, next, id) {
 	Transaction.findById(id).populate('user', 'displayName').exec(function(err, transaction) {
 		if (err) return next(err);
 		if (! transaction) return next(new Error('Failed to load Transaction ' + id));
-		req.transaction = transaction ;
+		req.transaction = transaction;
 		next();
 	});
 };
