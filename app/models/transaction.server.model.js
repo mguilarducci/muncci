@@ -5,6 +5,7 @@
  */
 var mongoose = require('mongoose'),
   moment = require('moment'),
+  async = require('async'),
 	Schema = mongoose.Schema;
 
 var statusList = 'created revoked accepted paid'.split(' '),
@@ -50,6 +51,11 @@ var TransactionSchema = new Schema({
   }
 });
 
+TransactionSchema.pre('save', function(next) {
+  this.updated = moment();
+  next();
+});
+
 TransactionSchema.statics.findMy = function(user, cb) {
   var or = [
     { user: user },
@@ -71,9 +77,42 @@ TransactionSchema.statics.findMy = function(user, cb) {
   this.find({ $or: or }).sort('-created').populate('user', 'displayName').exec(cb);
 };
 
-TransactionSchema.pre('save', function(next) {
-  this.updated = moment();
-  next();
-});
+TransactionSchema.statics.userAppend = function(currentUser, transaction, cb) {
+  var User = mongoose.model('User');
+
+  var or = [
+    { 'email': transaction.to },
+    { 'providerData.email': transaction.to },
+    { 'additionalProvidersData.google.email': transaction.to },
+    { 'additionalProvidersData.facebook.email': transaction.to }
+  ];
+
+  User.findOne({ $or: or }, function(err, friend) {
+    if (transaction.kind === 'pay') {
+      currentUser.toPay.push(transaction);
+      if (friend) {
+        friend.toReceive.push(transaction);
+      }
+    } else {
+      currentUser.toReceive.push(transaction);
+      if (friend) {
+        friend.toPay.push(transaction);
+      }
+    }
+
+    async.parallel([
+      function(done) {
+        currentUser.save(done);
+      },
+      function(done) {
+        if (friend) {
+          friend.save(done);
+        } else {
+          done();
+        }
+      }
+    ], cb);
+  });
+};
 
 mongoose.model('Transaction', TransactionSchema);

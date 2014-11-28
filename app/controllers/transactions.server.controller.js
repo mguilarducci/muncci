@@ -6,7 +6,9 @@
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
   moment = require('moment'),
+  async = require('async'),
 	Transaction = mongoose.model('Transaction'),
+  User = mongoose.model('User'),
 	_ = require('lodash');
 
 /**
@@ -31,6 +33,7 @@ exports.create = function(req, res) {
 			});
 		} else {
 			res.jsonp(transaction);
+      Transaction.userAppend(req.user, transaction);
 		}
 	});
 };
@@ -98,6 +101,26 @@ exports.list = function(req, res) {
 			res.jsonp(transactions);
 		}
 	});
+
+//  Transaction.aggregate().group({
+//    _id: { user: '$user', kind: '$kind', to: '$to'},
+//    total: { $sum: '$value' },
+//    average: { $avg: '$value' },
+//    count: { $sum: 1 }
+//  }).exec(function(err, result) {
+//    var json = [];
+//    async.each(result, function(one, done) {
+//      User.findById(one._id.user, 'id displayName email', function(err, user) {
+//        one._id.user = user;
+//        json.push(one);
+//        done();
+//      });
+//    }, function(err) {
+//      console.log(json);
+//    });
+//
+//  });
+//  res.jsonp([]);
 };
 
 /**

@@ -12,7 +12,7 @@ var should = require('should'),
 /**
  * Globals
  */
-var user, transaction;
+var user, friend, transaction;
 
 /**
  * Unit tests
@@ -25,10 +25,26 @@ describe('Transaction Model Unit Tests:', function() {
 			displayName: 'Full Name',
 			email: 'test@test.com',
 			username: 'username',
-			password: 'password'
+			password: 'password',
+      provider: 'local'
 		});
 
-		user.save(function() {
+    friend = new User({
+      firstName: 'Full',
+      lastName: 'Name',
+      displayName: 'Full Name',
+      email: 'friend@test.com',
+      username: 'friendx',
+      password: 'password',
+      provider: 'local',
+      providerData: { email: 'providerData@test.com' },
+      additionalProvidersData: {
+        google: { email: 'google@test.com' },
+        facebook: { email: 'facebook@test.com' }
+      }
+    });
+
+    user.save(function() {
 			transaction = new Transaction({
 				name: 'Transaction Name',
 				user: user,
@@ -39,7 +55,8 @@ describe('Transaction Model Unit Tests:', function() {
         dueDate: moment('1988-05-09')
 			});
 
-			done();
+      friend.save(done);
+			// done();
 		});
 	});
 
@@ -78,6 +95,81 @@ describe('Transaction Model Unit Tests:', function() {
       });
     });
 	});
+
+  describe('Method userAppend', function() {
+    it('should append the transaction in user.toPay (kind pay)', function(done) {
+      transaction.kind = 'pay';
+      Transaction.userAppend(user, transaction, function() {
+        User.findById(user._id, function(err, user) {
+          user.toPay.length.should.equal(1);
+          done();
+        });
+      });
+    });
+
+    it('should append the transaction in user.toReceive (kind receive)', function(done) {
+      transaction.kind = 'receive';
+      Transaction.userAppend(user, transaction, function() {
+        User.findById(user._id, function(err, user) {
+          user.toReceive.length.should.equal(1);
+          done();
+        });
+      });
+    });
+
+    it('should append the transaction in friend.toReceive (kind pay)', function(done) {
+      transaction.kind = 'pay';
+      Transaction.userAppend(user, transaction, function() {
+        User.findById(friend._id, function(err, friend) {
+          friend.toReceive.length.should.equal(1);
+          done();
+        });
+      });
+    });
+
+    it('should append the transaction in friend.toPay (kind receive)', function(done) {
+      transaction.kind = 'receive';
+      Transaction.userAppend(user, transaction, function() {
+        User.findById(friend._id, function(err, friend) {
+          friend.toPay.length.should.equal(1);
+          done();
+        });
+      });
+    });
+
+    it('should append with providerData email', function(done) {
+      transaction.kind = 'pay';
+      transaction.to = 'providerData@test.com';
+      Transaction.userAppend(user, transaction, function() {
+        User.findById(friend._id, function(err, friend) {
+          friend.toReceive.length.should.equal(1);
+          done();
+        });
+      });
+    });
+
+    it('should append with google email', function(done) {
+      transaction.kind = 'pay';
+      transaction.to = 'google@test.com';
+      Transaction.userAppend(user, transaction, function() {
+        User.findById(friend._id, function(err, friend) {
+          friend.toReceive.length.should.equal(1);
+          done();
+        });
+      });
+    });
+
+    it('should append with facebook email', function(done) {
+      transaction.kind = 'pay';
+      transaction.to = 'facebook@test.com';
+      Transaction.userAppend(user, transaction, function() {
+        User.findById(friend._id, function(err, friend) {
+          friend.toReceive.length.should.equal(1);
+          done();
+        });
+      });
+    });
+  });
 
 	afterEach(function(done) { 
 		Transaction.remove().exec();
