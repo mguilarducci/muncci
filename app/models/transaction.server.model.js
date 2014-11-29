@@ -79,12 +79,9 @@ TransactionSchema.statics.findMy = function(user, cb) {
 };
 
 var pushUnique = function(collection, value) {
-  var index = _.findIndex(collection, function(t) {
-    return t.transaction === value.transaction._id;
-  });
-
+  var index = _.findIndex(collection, { 'transaction': value.transaction._id });
   if (index === -1) {
-    collection.push(value);
+     collection.push(value);
   }
 };
 
