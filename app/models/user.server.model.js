@@ -89,8 +89,10 @@ var UserSchema = new Schema({
 	resetPasswordExpires: {
 		type: Date
 	},
-  toPay: [{ type: Schema.ObjectId, ref: 'Transaction'}],
-  toReceive: [{ type: Schema.ObjectId, ref: 'Transaction'}]
+  transactions: [{
+    transaction: { type: Schema.ObjectId, ref: 'Transaction' },
+    myValue: Number
+   }]
 });
 
 /**

@@ -97,41 +97,41 @@ describe('Transaction Model Unit Tests:', function() {
 	});
 
   describe('Method userAppend', function() {
-    it('should append the transaction in user.toPay (kind pay)', function(done) {
+    it('should append the transaction in user.transaction as negative (kind pay)', function(done) {
       transaction.kind = 'pay';
       Transaction.userAppend(user, transaction, function() {
         User.findById(user._id, function(err, user) {
-          user.toPay.length.should.equal(1);
+          user.transactions[0].myValue.should.equal(-100);
           done();
         });
       });
     });
 
-    it('should append the transaction in user.toReceive (kind receive)', function(done) {
+    it('should append the transaction in user.transactions as positive (kind receive)', function(done) {
       transaction.kind = 'receive';
       Transaction.userAppend(user, transaction, function() {
         User.findById(user._id, function(err, user) {
-          user.toReceive.length.should.equal(1);
+          user.transactions[0].myValue.should.equal(100);
           done();
         });
       });
     });
 
-    it('should append the transaction in friend.toReceive (kind pay)', function(done) {
+    it('should append the transaction in friend.transactions as positive (kind pay)', function(done) {
       transaction.kind = 'pay';
       Transaction.userAppend(user, transaction, function() {
         User.findById(friend._id, function(err, friend) {
-          friend.toReceive.length.should.equal(1);
+          friend.transactions[0].myValue.should.equal(100);
           done();
         });
       });
     });
 
-    it('should append the transaction in friend.toPay (kind receive)', function(done) {
+    it('should append the transaction in friend.transactions as negative (kind receive)', function(done) {
       transaction.kind = 'receive';
       Transaction.userAppend(user, transaction, function() {
         User.findById(friend._id, function(err, friend) {
-          friend.toPay.length.should.equal(1);
+          friend.transactions[0].myValue.should.equal(-100);
           done();
         });
       });
@@ -142,7 +142,7 @@ describe('Transaction Model Unit Tests:', function() {
       transaction.to = 'providerData@test.com';
       Transaction.userAppend(user, transaction, function() {
         User.findById(friend._id, function(err, friend) {
-          friend.toReceive.length.should.equal(1);
+          friend.transactions.length.should.equal(1);
           done();
         });
       });
@@ -153,7 +153,7 @@ describe('Transaction Model Unit Tests:', function() {
       transaction.to = 'google@test.com';
       Transaction.userAppend(user, transaction, function() {
         User.findById(friend._id, function(err, friend) {
-          friend.toReceive.length.should.equal(1);
+          friend.transactions.length.should.equal(1);
           done();
         });
       });
@@ -164,7 +164,7 @@ describe('Transaction Model Unit Tests:', function() {
       transaction.to = 'facebook@test.com';
       Transaction.userAppend(user, transaction, function() {
         User.findById(friend._id, function(err, friend) {
-          friend.toReceive.length.should.equal(1);
+          friend.transactions.length.should.equal(1);
           done();
         });
       });
