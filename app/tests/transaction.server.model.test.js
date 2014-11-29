@@ -169,6 +169,18 @@ describe('Transaction Model Unit Tests:', function() {
         });
       });
     });
+
+    it('should append only different transactions', function(done) {
+      transaction.kind = 'pay';
+      Transaction.userAppend(user, transaction, function() {
+        Transaction.userAppend(user, transaction, function() {
+          User.findById(user._id, function(err, user) {
+            user.transactions.length.should.equal(1);
+            done();
+          });
+        });
+      });
+    });
   });
 
 	afterEach(function(done) { 

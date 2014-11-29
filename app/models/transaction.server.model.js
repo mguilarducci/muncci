@@ -6,6 +6,7 @@
 var mongoose = require('mongoose'),
   moment = require('moment'),
   async = require('async'),
+  _ = require('lodash'),
 	Schema = mongoose.Schema;
 
 var statusList = 'created revoked accepted paid'.split(' '),
@@ -77,6 +78,16 @@ TransactionSchema.statics.findMy = function(user, cb) {
   this.find({ $or: or }).sort('-created').populate('user', 'displayName').exec(cb);
 };
 
+var pushUnique = function(collection, value) {
+  var index = _.findIndex(collection, function(t) {
+    return t.transaction === value.transaction._id;
+  });
+
+  if (index === -1) {
+    collection.push(value);
+  }
+};
+
 TransactionSchema.statics.userAppend = function(currentUser, transaction, cb) {
   var User = mongoose.model('User');
 
@@ -92,14 +103,16 @@ TransactionSchema.statics.userAppend = function(currentUser, transaction, cb) {
 
   User.findOne({ $or: or }, function(err, friend) {
     if (transaction.kind === 'pay') {
-        currentUser.transactions.push(negative);
+      pushUnique(currentUser.transactions, negative);
+
       if (friend) {
-        friend.transactions.push(positive);
+        pushUnique(friend.transactions, positive);
       }
     } else {
-      currentUser.transactions.push(positive);
+      pushUnique(currentUser.transactions, positive);
+
       if (friend) {
-        friend.transactions.push(negative);
+        pushUnique(friend.transactions, negative);
       }
     }
 
