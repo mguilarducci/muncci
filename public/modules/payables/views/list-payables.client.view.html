@@ -1,0 +1,13 @@
+<section data-ng-controller="PayablesController" data-ng-init="find()">
+    <div class="page-header">
+        <h1>Payables</h1>
+    </div>
+    <div class="list-group">
+        <li data-ng-repeat="payable in payables" class="list-group-item" data-ng-show="payable.total != 0">
+		    <h4 class="list-group-item-heading" >
+                {{ payable._id.to }}: R${{ payable.total }}
+		    </h4>
+
+        </li>
+    </div>
+</section>

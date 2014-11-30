@@ -47,6 +47,11 @@ angular.element(document).ready(function() {
 ApplicationConfiguration.registerModule('core');
 'use strict';
 
+// Use application configuration module to register a new module
+ApplicationConfiguration.registerModule('payables');
+
+'use strict';
+
 // Use applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('transactions');
 'use strict';
@@ -264,6 +269,58 @@ angular.module('core').service('Menus', [
 ]);
 'use strict';
 
+angular.module('payables').run(['Menus',
+  function(Menus) {
+    // Set top bar menu items
+    Menus.addMenuItem('topbar', 'Payables', 'payables', 'dropdown', '/payables/');
+    Menus.addSubMenuItem('topbar', 'payables', 'List payables', 'payables');
+  }
+]);
+
+'use strict';
+
+//Setting up route
+angular.module('payables').config(['$stateProvider',
+  function($stateProvider) {
+    // Payables state routing
+    $stateProvider.
+      state('listPayables', {
+        url: '/payables',
+        templateUrl: 'modules/payables/views/list-payables.client.view.html'
+      });
+  }
+]);
+
+'use strict';
+
+// Transactions controller
+angular.module('payables').controller('PayablesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Payables',
+  function($scope, $stateParams, $location, Authentication, Payables) {
+    $scope.authentication = Authentication;
+
+    $scope.find = function() {
+      $scope.payables = Payables.query();
+      console.log($scope.payables);
+    };
+  }
+]);
+
+'use strict';
+
+// Payables service used to communicate Transactions REST endpoints
+angular.module('payables').factory('Payables', ['$resource',
+  function($resource) {
+    return $resource('payables/:payableId', { transactionId: '@_id'
+    }, {
+      update: {
+        method: 'PUT'
+      }
+    });
+  }
+]);
+
+'use strict';
+
 // Configuring the Articles module
 angular.module('transactions').run(['Menus',
 	function(Menus) {
@@ -313,7 +370,9 @@ angular.module('transactions').controller('TransactionsController', ['$scope', '
         to: this.to,
         kind: this.kind,
         status: this.status,
-        value: this.value
+        value: this.value,
+        date: this.date,
+        dueDate: this.dueDate
 			});
 
 			// Redirect after save
@@ -326,6 +385,8 @@ angular.module('transactions').controller('TransactionsController', ['$scope', '
         $scope.kind = '';
         $scope.status = '';
         $scope.value = '';
+        $scope.date = '';
+        $scope.dueDate = '';
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
