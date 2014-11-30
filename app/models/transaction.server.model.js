@@ -95,21 +95,24 @@ TransactionSchema.statics.userAppend = function(currentUser, transaction, cb) {
     { 'additionalProvidersData.facebook.email': transaction.to }
   ];
 
-  var positive = { transaction: transaction, myValue: transaction.value },
-    negative = { transaction: transaction, myValue: transaction.value * -1 };
+  var obj = {
+      transaction: transaction,
+      to: transaction.to,
+      status: transaction.status
+    };
 
   User.findOne({ $or: or }, function(err, friend) {
     if (transaction.kind === 'pay') {
-      pushUnique(currentUser.transactions, negative);
+      pushUnique(currentUser.transactions, _.assign(obj, { value: transaction.value * -1 }));
 
       if (friend) {
-        pushUnique(friend.transactions, positive);
+        pushUnique(friend.transactions, _.assign(obj, { value: transaction.value }));
       }
     } else {
-      pushUnique(currentUser.transactions, positive);
+      pushUnique(currentUser.transactions, _.assign(obj, { value: transaction.value }));
 
       if (friend) {
-        pushUnique(friend.transactions, negative);
+        pushUnique(friend.transactions, _.assign(obj, { value: transaction.value * -1 }));
       }
     }
 

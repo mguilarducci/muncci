@@ -91,7 +91,9 @@ var UserSchema = new Schema({
 	},
   transactions: [{
     transaction: { type: Schema.ObjectId, ref: 'Transaction' },
-    myValue: Number
+    value: Number,
+    status: String,
+    to: String
    }]
 });
 

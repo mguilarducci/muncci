@@ -101,7 +101,7 @@ describe('Transaction Model Unit Tests:', function() {
       transaction.kind = 'pay';
       Transaction.userAppend(user, transaction, function() {
         User.findById(user._id, function(err, user) {
-          user.transactions[0].myValue.should.equal(-100);
+          user.transactions[0].value.should.equal(-100);
           done();
         });
       });
@@ -111,7 +111,7 @@ describe('Transaction Model Unit Tests:', function() {
       transaction.kind = 'receive';
       Transaction.userAppend(user, transaction, function() {
         User.findById(user._id, function(err, user) {
-          user.transactions[0].myValue.should.equal(100);
+          user.transactions[0].value.should.equal(100);
           done();
         });
       });
@@ -121,7 +121,7 @@ describe('Transaction Model Unit Tests:', function() {
       transaction.kind = 'pay';
       Transaction.userAppend(user, transaction, function() {
         User.findById(friend._id, function(err, friend) {
-          friend.transactions[0].myValue.should.equal(100);
+          friend.transactions[0].value.should.equal(100);
           done();
         });
       });
@@ -131,7 +131,7 @@ describe('Transaction Model Unit Tests:', function() {
       transaction.kind = 'receive';
       Transaction.userAppend(user, transaction, function() {
         User.findById(friend._id, function(err, friend) {
-          friend.transactions[0].myValue.should.equal(-100);
+          friend.transactions[0].value.should.equal(-100);
           done();
         });
       });
