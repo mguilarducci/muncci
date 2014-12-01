@@ -9,5 +9,11 @@ angular.module('payables').controller('PayablesController', ['$scope', '$statePa
       $scope.payables = Payables.query();
       console.log($scope.payables);
     };
+
+    $scope.rowClass = function(payable) {
+      return payable.total > 0 ?
+        'list-group-item-success' :
+        'list-group-item-danger';
+    };
   }
 ]);
