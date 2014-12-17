@@ -106,26 +106,6 @@ exports.list = function(req, res) {
 			res.jsonp(transactions);
 		}
 	});
-
-//  Transaction.aggregate().group({
-//    _id: { user: '$user', kind: '$kind', to: '$to'},
-//    total: { $sum: '$value' },
-//    average: { $avg: '$value' },
-//    count: { $sum: 1 }
-//  }).exec(function(err, result) {
-//    var json = [];
-//    async.each(result, function(one, done) {
-//      User.findById(one._id.user, 'id displayName email', function(err, user) {
-//        one._id.user = user;
-//        json.push(one);
-//        done();
-//      });
-//    }, function(err) {
-//      console.log(json);
-//    });
-//
-//  });
-//  res.jsonp([]);
 };
 
 /**
