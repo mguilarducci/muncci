@@ -149,4 +149,17 @@ UserSchema.statics.findUniqueUsername = function(username, suffix, callback) {
 	});
 };
 
+UserSchema.statics.findByEmail = function(email, cb) {
+  var _this = this;
+
+  var or = [
+    { 'email': email },
+    { 'providerData.email': email },
+    { 'additionalProvidersData.google.email': email },
+    { 'additionalProvidersData.facebook.email': email }
+  ];
+
+  _this.findOne({ $or: or }, cb);
+};
+
 mongoose.model('User', UserSchema);

@@ -26,16 +26,18 @@ exports.create = function(req, res) {
     transaction.dueDate = moment(req.body.dueDate);
   }
 
-	transaction.save(function(err) {
-		if (err) {
-			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
-			});
-		} else {
-			res.jsonp(transaction);
-      Transaction.userAppend(req.user, transaction);
-		}
-	});
+  User.findByEmail(transaction.to, function(err, friend) {
+    transaction.friend = friend;
+    transaction.save(function(err) {
+      if (err) {
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err)
+        });
+      } else {
+        res.jsonp(transaction);
+      }
+    });
+  });
 };
 
 /**
@@ -60,15 +62,18 @@ exports.update = function(req, res) {
     transaction.dueDate = moment(req.body.dueDate);
   }
 
-	transaction.save(function(err) {
-		if (err) {
-			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
-			});
-		} else {
-			res.jsonp(transaction);
-		}
-	});
+  User.findByEmail(transaction.to, function(err, friend) {
+    transaction.friend = friend;
+    transaction.save(function(err) {
+      if (err) {
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err)
+        });
+      } else {
+        res.jsonp(transaction);
+      }
+    });
+  });
 };
 
 /**

@@ -34,6 +34,10 @@ var TransactionSchema = new Schema({
 		type: Schema.ObjectId,
 		ref: 'User'
 	},
+  friend: {
+    type: Schema.ObjectId,
+    ref: 'User'
+  },
   to: {
     type: String,
     trim: true,
@@ -75,7 +79,10 @@ TransactionSchema.statics.findMy = function(user, cb) {
     or.push({ 'to': user.additionalProvidersData.facebook.email });
   }
 
-  this.find({ $or: or }).sort('-created').populate('user', 'displayName').exec(cb);
+  this.find({ $or: or }).sort('-created')
+    .populate('user', 'displayName')
+    .populate('friend', 'displayName')
+    .exec(cb);
 };
 
 var pushUnique = function(collection, value) {
