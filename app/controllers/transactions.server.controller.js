@@ -54,11 +54,11 @@ exports.update = function(req, res) {
   var transaction = req.transaction;
 
   User.findByEmail(transaction.to, function(err, friend) {
-    transaction = _.extend(transaction, req.body);
-
     if (friend) {
-      transaction = _.extend(transaction, { friend: friend });
+      req.body.friend = friend;
     }
+
+    transaction = _.extend(transaction, req.body);
 
     if (req.body.date && req.body.date !== '') {
       transaction.date = moment(req.body.date);
@@ -69,6 +69,7 @@ exports.update = function(req, res) {
     }
 
     transaction.save(function(err) {
+      console.log(err);
       if (err) {
         return res.status(400).send({
           message: errorHandler.getErrorMessage(err)
