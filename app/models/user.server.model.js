@@ -159,7 +159,7 @@ UserSchema.statics.findByEmail = function(email, cb) {
     { 'additionalProvidersData.facebook.email': email }
   ];
 
-  _this.findOne({ $or: or }, cb);
+  _this.findOne({ $or: or }).select('id displayName').exec(cb);
 };
 
 mongoose.model('User', UserSchema);

@@ -61,11 +61,17 @@ TransactionSchema.pre('save', function(next) {
   next();
 });
 
-TransactionSchema.statics.findMy = function(user, cb) {
-  var or = [
+TransactionSchema.statics.findMy = function(user, where, cb) {
+  var and = where,
+    or = [
     { user: user },
     { 'to': user.email }
   ];
+
+  if (_.isFunction(where)) {
+    cb = where;
+    and = {};
+  }
 
   if (user.providerData) {
     or.push({ 'to': user.providerData.email });
@@ -79,9 +85,11 @@ TransactionSchema.statics.findMy = function(user, cb) {
     or.push({ 'to': user.additionalProvidersData.facebook.email });
   }
 
-  this.find({ $or: or }).sort('-created')
+  this.find({ $or: or })
+    .and(and)
+    .sort('-created')
     .populate('user', 'displayName')
-    .populate('friend', 'displayName')
+    .populate('friend', 'id displayName')
     .exec(cb);
 };
 

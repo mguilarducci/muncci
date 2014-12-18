@@ -51,19 +51,23 @@ exports.read = function(req, res) {
  * Update a Transaction
  */
 exports.update = function(req, res) {
-	var transaction = req.transaction;
-
-	transaction = _.extend(transaction , req.body);
-  if (req.body.date && req.body.date !== '') {
-    transaction.date = moment(req.body.date);
-  }
-
-  if (req.body.dueDate && req.body.dueDate !== '') {
-    transaction.dueDate = moment(req.body.dueDate);
-  }
+  var transaction = req.transaction;
 
   User.findByEmail(transaction.to, function(err, friend) {
-    transaction.friend = friend;
+    transaction = _.extend(transaction, req.body);
+
+    if (friend) {
+      transaction = _.extend(transaction, { friend: friend });
+    }
+
+    if (req.body.date && req.body.date !== '') {
+      transaction.date = moment(req.body.date);
+    }
+
+    if (req.body.dueDate && req.body.dueDate !== '') {
+      transaction.dueDate = moment(req.body.dueDate);
+    }
+
     transaction.save(function(err) {
       if (err) {
         return res.status(400).send({
