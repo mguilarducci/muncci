@@ -29,12 +29,7 @@ describe('Payables tests', function() {
       email: 'test@test.com',
       username: credentials.username,
       password: credentials.password,
-      provider: 'local',
-      transactions: [{
-        value: -100,
-        status: 'created',
-        to: 'friend@test.com'
-      }]
+      provider: 'local'
     });
 
     // friend
@@ -45,12 +40,7 @@ describe('Payables tests', function() {
       email: 'friend@test.com',
       username: 'friend',
       password: 'password',
-      provider: 'local',
-      transactions: [{
-        value: -100,
-        status: 'created',
-        to: 'person@test.com'
-      }]
+      provider: 'local'
     });
 
     // Save a user to the test db and create new Transaction
@@ -63,39 +53,9 @@ describe('Payables tests', function() {
       .end(done);
   });
 
-  it('should be able to list payables if logged in', function(done) {
-    agent.post('/auth/signin')
-      .send(credentials)
-      .expect(200)
-      .end(function(signinErr, signinRes) {
-        // Handle signin error
-        if (signinErr) done(signinErr);
+  it('should be able to list payables if logged in');
 
-        agent.get('/payables')
-          .end(function(req, res) {
-            res.body.should.be.an.Array.with.lengthOf(1);
-            done();
-          });
-      });
-  });
-
-  it('should not be able to list payables of other person', function(done) {
-    friend.save(function() {
-      agent.post('/auth/signin')
-        .send(credentials)
-        .expect(200)
-        .end(function(signinErr, signinRes) {
-          // Handle signin error
-          if (signinErr) done(signinErr);
-
-          agent.get('/payables')
-            .end(function(req, res) {
-              res.body.should.be.an.Array.with.lengthOf(1);
-              done();
-            });
-        });
-    });
-  });
+  it('should not be able to list payables of other person');
 
   afterEach(function(done) {
     User.remove().exec();
