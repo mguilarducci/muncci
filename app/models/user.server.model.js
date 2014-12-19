@@ -88,7 +88,13 @@ var UserSchema = new Schema({
 	},
 	resetPasswordExpires: {
 		type: Date
-	}
+	},
+  transactions: [{
+    transaction: { type: Schema.ObjectId, ref: 'Transaction' },
+    value: Number,
+    status: String,
+    to: String
+   }]
 });
 
 /**
@@ -141,6 +147,19 @@ UserSchema.statics.findUniqueUsername = function(username, suffix, callback) {
 			callback(null);
 		}
 	});
+};
+
+UserSchema.statics.findByEmail = function(email, cb) {
+  var _this = this;
+
+  var or = [
+    { 'email': email },
+    { 'providerData.email': email },
+    { 'additionalProvidersData.google.email': email },
+    { 'additionalProvidersData.facebook.email': email }
+  ];
+
+  _this.findOne({ $or: or }).select('id displayName').exec(cb);
 };
 
 mongoose.model('User', UserSchema);

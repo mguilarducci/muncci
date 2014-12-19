@@ -12,7 +12,7 @@ var should = require('should'),
 /**
  * Globals
  */
-var user, transaction;
+var user, friend, transaction;
 
 /**
  * Unit tests
@@ -25,10 +25,26 @@ describe('Transaction Model Unit Tests:', function() {
 			displayName: 'Full Name',
 			email: 'test@test.com',
 			username: 'username',
-			password: 'password'
+			password: 'password',
+      provider: 'local'
 		});
 
-		user.save(function() {
+    friend = new User({
+      firstName: 'Full',
+      lastName: 'Name',
+      displayName: 'Full Name',
+      email: 'friend@test.com',
+      username: 'friendx',
+      password: 'password',
+      provider: 'local',
+      providerData: { email: 'providerData@test.com' },
+      additionalProvidersData: {
+        google: { email: 'google@test.com' },
+        facebook: { email: 'facebook@test.com' }
+      }
+    });
+
+    user.save(function() {
 			transaction = new Transaction({
 				name: 'Transaction Name',
 				user: user,
@@ -39,7 +55,8 @@ describe('Transaction Model Unit Tests:', function() {
         dueDate: moment('1988-05-09')
 			});
 
-			done();
+      friend.save(done);
+			// done();
 		});
 	});
 

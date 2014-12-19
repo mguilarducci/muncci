@@ -86,7 +86,12 @@ angular.module('transactions').controller('TransactionsController', ['$scope', '
           kind = 'Receber';
           fromTo = 'de';
         }
-        to = transaction.to;
+
+        if (transaction.friend) {
+          to = transaction.friend.displayName || transaction.to;
+        } else {
+          to = transaction.to;
+        }
       } else {
         if (transaction.kind === 'pay') {
           kind = 'Receber';

@@ -6,7 +6,9 @@
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
   moment = require('moment'),
+  async = require('async'),
 	Transaction = mongoose.model('Transaction'),
+  User = mongoose.model('User'),
 	_ = require('lodash');
 
 /**
@@ -24,15 +26,18 @@ exports.create = function(req, res) {
     transaction.dueDate = moment(req.body.dueDate);
   }
 
-	transaction.save(function(err) {
-		if (err) {
-			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
-			});
-		} else {
-			res.jsonp(transaction);
-		}
-	});
+  User.findByEmail(transaction.to, function(err, friend) {
+    transaction.friend = friend;
+    transaction.save(function(err) {
+      if (err) {
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err)
+        });
+      } else {
+        res.jsonp(transaction);
+      }
+    });
+  });
 };
 
 /**
@@ -46,26 +51,34 @@ exports.read = function(req, res) {
  * Update a Transaction
  */
 exports.update = function(req, res) {
-	var transaction = req.transaction;
+  var transaction = req.transaction;
 
-	transaction = _.extend(transaction , req.body);
-  if (req.body.date && req.body.date !== '') {
-    transaction.date = moment(req.body.date);
-  }
+  User.findByEmail(transaction.to, function(err, friend) {
+    if (friend) {
+      req.body.friend = friend;
+    }
 
-  if (req.body.dueDate && req.body.dueDate !== '') {
-    transaction.dueDate = moment(req.body.dueDate);
-  }
+    transaction = _.extend(transaction, req.body);
 
-	transaction.save(function(err) {
-		if (err) {
-			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
-			});
-		} else {
-			res.jsonp(transaction);
-		}
-	});
+    if (req.body.date && req.body.date !== '') {
+      transaction.date = moment(req.body.date);
+    }
+
+    if (req.body.dueDate && req.body.dueDate !== '') {
+      transaction.dueDate = moment(req.body.dueDate);
+    }
+
+    transaction.save(function(err) {
+      console.log(err);
+      if (err) {
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err)
+        });
+      } else {
+        res.jsonp(transaction);
+      }
+    });
+  });
 };
 
 /**

@@ -5,6 +5,8 @@
  */
 var mongoose = require('mongoose'),
   moment = require('moment'),
+  async = require('async'),
+  _ = require('lodash'),
 	Schema = mongoose.Schema;
 
 var statusList = 'created revoked accepted paid'.split(' '),
@@ -32,6 +34,10 @@ var TransactionSchema = new Schema({
 		type: Schema.ObjectId,
 		ref: 'User'
 	},
+  friend: {
+    type: Schema.ObjectId,
+    ref: 'User'
+  },
   to: {
     type: String,
     trim: true,
@@ -50,11 +56,22 @@ var TransactionSchema = new Schema({
   }
 });
 
-TransactionSchema.statics.findMy = function(user, cb) {
-  var or = [
+TransactionSchema.pre('save', function(next) {
+  this.updated = moment();
+  next();
+});
+
+TransactionSchema.statics.findMy = function(user, where, cb) {
+  var and = where,
+    or = [
     { user: user },
     { 'to': user.email }
   ];
+
+  if (_.isFunction(where)) {
+    cb = where;
+    and = {};
+  }
 
   if (user.providerData) {
     or.push({ 'to': user.providerData.email });
@@ -68,12 +85,12 @@ TransactionSchema.statics.findMy = function(user, cb) {
     or.push({ 'to': user.additionalProvidersData.facebook.email });
   }
 
-  this.find({ $or: or }).sort('-created').populate('user', 'displayName').exec(cb);
+  this.find({ $or: or })
+    .and(and)
+    .sort('-created')
+    .populate('user', 'displayName')
+    .populate('friend', 'id displayName')
+    .exec(cb);
 };
-
-TransactionSchema.pre('save', function(next) {
-  this.updated = moment();
-  next();
-});
 
 mongoose.model('Transaction', TransactionSchema);
