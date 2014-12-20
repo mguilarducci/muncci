@@ -8,7 +8,7 @@
            class="list-group-item {{rowClass(transaction, authentication.user)}}">
 
 
-            <span class="badge">{{transaction.status}}</span>
+            <span class="badge">{{transaction.status}} by {{transaction.updatedBy.displayName}}</span>
 
             <div class="list-group-item-text">
                 <a class="btn btn-primary" data-ng-click="accept(transaction);" data-ng-show="canAccept(transaction, authentication.user)">

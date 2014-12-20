@@ -30,7 +30,11 @@ var TransactionSchema = new Schema({
     type: Date,
     default: Date.now
   },
-	user: {
+	updatedBy: {
+		type: Schema.ObjectId,
+		ref: 'User'
+	},
+  user: {
 		type: Schema.ObjectId,
 		ref: 'User'
 	},
@@ -90,6 +94,7 @@ TransactionSchema.statics.findMy = function(user, where, cb) {
     .sort('-created')
     .populate('user', 'displayName')
     .populate('friend', 'id displayName')
+    .populate('updatedBy', 'displayName')
     .exec(cb);
 };
 

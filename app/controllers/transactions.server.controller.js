@@ -17,6 +17,7 @@ var mongoose = require('mongoose'),
 exports.create = function(req, res) {
 	var transaction = new Transaction(req.body);
 	transaction.user = req.user;
+	transaction.updatedBy = req.user;
 
   if (req.body.date && req.body.date !== '') {
     transaction.date = moment(req.body.date);
@@ -57,6 +58,7 @@ exports.update = function(req, res) {
     if (friend) {
       req.body.friend = friend;
     }
+    req.body.updatedBy = req.user;
 
     transaction = _.extend(transaction, req.body);
 
