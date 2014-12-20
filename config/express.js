@@ -21,7 +21,8 @@ var fs = require('fs'),
 	flash = require('connect-flash'),
 	config = require('./config'),
 	consolidate = require('consolidate'),
-	path = require('path');
+	path = require('path'),
+  raven = require('raven');
 
 module.exports = function(db) {
 	// Initialize express app
@@ -117,6 +118,8 @@ module.exports = function(db) {
 	config.getGlobbedFiles('./app/routes/**/*.js').forEach(function(routePath) {
 		require(path.resolve(routePath))(app);
 	});
+
+  app.use(raven.middleware.express('https://ce57feec43944f5c98d77b606ccb0ca6:ca96aa8cf3024701bf1669e245389da9@app.getsentry.com/35013'));
 
 	// Assume 'not found' in the error msgs is a 404. this is somewhat silly, but valid, you can do whatever you like, set properties, use instanceof etc.
 	app.use(function(err, req, res, next) {
