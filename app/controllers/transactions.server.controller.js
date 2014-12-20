@@ -4,20 +4,20 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-	errorHandler = require('./errors.server.controller'),
+  errorHandler = require('./errors.server.controller'),
   moment = require('moment'),
   async = require('async'),
-	Transaction = mongoose.model('Transaction'),
+  Transaction = mongoose.model('Transaction'),
   User = mongoose.model('User'),
-	_ = require('lodash');
+  _ = require('lodash');
 
 /**
  * Create a Transaction
  */
-exports.create = function(req, res) {
-	var transaction = new Transaction(req.body);
-	transaction.user = req.user;
-	transaction.updatedBy = req.user;
+exports.create = function (req, res) {
+  var transaction = new Transaction(req.body);
+  transaction.user = req.user;
+  transaction.updatedBy = req.user;
 
   if (req.body.date && req.body.date !== '') {
     transaction.date = moment(req.body.date);
@@ -27,9 +27,9 @@ exports.create = function(req, res) {
     transaction.dueDate = moment(req.body.dueDate);
   }
 
-  User.findByEmail(transaction.to, function(err, friend) {
+  User.findByEmail(transaction.to, function (err, friend) {
     transaction.friend = friend;
-    transaction.save(function(err) {
+    transaction.save(function (err) {
       if (err) {
         return res.status(400).send({
           message: errorHandler.getErrorMessage(err)
@@ -44,17 +44,17 @@ exports.create = function(req, res) {
 /**
  * Show the current Transaction
  */
-exports.read = function(req, res) {
-	res.jsonp(req.transaction);
+exports.read = function (req, res) {
+  res.jsonp(req.transaction);
 };
 
 /**
  * Update a Transaction
  */
-exports.update = function(req, res) {
+exports.update = function (req, res) {
   var transaction = req.transaction;
 
-  User.findByEmail(transaction.to, function(err, friend) {
+  User.findByEmail(transaction.to, function (err, friend) {
     if (friend) {
       req.body.friend = friend;
     }
@@ -70,7 +70,7 @@ exports.update = function(req, res) {
       transaction.dueDate = moment(req.body.dueDate);
     }
 
-    transaction.save(function(err) {
+    transaction.save(function (err) {
       console.log(err);
       if (err) {
         return res.status(400).send({
@@ -86,58 +86,58 @@ exports.update = function(req, res) {
 /**
  * Delete an Transaction
  */
-exports.delete = function(req, res) {
-	var transaction = req.transaction ;
+exports.delete = function (req, res) {
+  var transaction = req.transaction;
 
-	transaction.remove(function(err) {
-		if (err) {
-			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
-			});
-		} else {
-			res.jsonp(transaction);
-		}
-	});
+  transaction.remove(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      res.jsonp(transaction);
+    }
+  });
 };
 
 /**
  * List of Transactions
  */
-exports.list = function(req, res) {
-  Transaction.findMy(req.user, function(err, transactions) {
-		if (err) {
-			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
-			});
-		} else {
-			res.jsonp(transactions);
-		}
-	});
+exports.list = function (req, res) {
+  Transaction.findMy(req.user, function (err, transactions) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      res.jsonp(transactions);
+    }
+  });
 };
 
 /**
  * Transaction middleware
  */
-exports.transactionByID = function(req, res, next, id) { 
-	Transaction.findById(id).populate('user', 'displayName').exec(function(err, transaction) {
-		if (err) return next(err);
-		if (! transaction) return next(new Error('Failed to load Transaction ' + id));
-		req.transaction = transaction;
-		next();
-	});
+exports.transactionByID = function (req, res, next, id) {
+  Transaction.findById(id).populate('user', 'displayName').exec(function (err, transaction) {
+    if (err) return next(err);
+    if (!transaction) return next(new Error('Failed to load Transaction ' + id));
+    req.transaction = transaction;
+    next();
+  });
 };
 
 /**
  * Transaction authorization middleware
  */
-exports.hasAuthorization = function(req, res, next) {
-	if (req.transaction.user.id !== req.user.id && req.transaction.to !== req.user.email) {
-		return res.status(403).send('User is not authorized');
-	}
-	next();
+exports.hasAuthorization = function (req, res, next) {
+  if (req.transaction.user.id !== req.user.id && req.transaction.to !== req.user.email) {
+    return res.status(403).send('User is not authorized');
+  }
+  next();
 };
 
-exports.canPay = function(req, res, next) {
+exports.canPay = function (req, res, next) {
   var transaction = req.transaction,
     user = req.user,
     canPay = (transaction.user.id === user.id || transaction.to === user.email) &&

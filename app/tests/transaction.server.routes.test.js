@@ -1,12 +1,12 @@
 'use strict';
 
 var should = require('should'),
-	request = require('supertest'),
-	app = require('../../server'),
-	mongoose = require('mongoose'),
-	User = mongoose.model('User'),
-	Transaction = mongoose.model('Transaction'),
-	agent = request.agent(app);
+  request = require('supertest'),
+  app = require('../../server'),
+  mongoose = require('mongoose'),
+  User = mongoose.model('User'),
+  Transaction = mongoose.model('Transaction'),
+  agent = request.agent(app);
 
 /**
  * Globals
@@ -16,24 +16,24 @@ var credentials, user, friend, transaction;
 /**
  * Transaction routes tests
  */
-describe('Transaction CRUD tests', function() {
-	beforeEach(function(done) {
-		// Create user credentials
-		credentials = {
-			username: 'username',
-			password: 'password'
-		};
+describe('Transaction CRUD tests', function () {
+  beforeEach(function (done) {
+    // Create user credentials
+    credentials = {
+      username: 'username',
+      password: 'password'
+    };
 
-		// Create a new user
-		user = new User({
-			firstName: 'Full',
-			lastName: 'Name',
-			displayName: 'Full Name',
-			email: 'test@test.com',
-			username: credentials.username,
-			password: credentials.password,
-			provider: 'local'
-		});
+    // Create a new user
+    user = new User({
+      firstName: 'Full',
+      lastName: 'Name',
+      displayName: 'Full Name',
+      email: 'test@test.com',
+      username: credentials.username,
+      password: credentials.password,
+      provider: 'local'
+    });
 
     // friend
     friend = new User({
@@ -46,155 +46,155 @@ describe('Transaction CRUD tests', function() {
       provider: 'local'
     });
 
-		// Save a user to the test db and create new Transaction
-		user.save(function() {
-			transaction = {
-				name: 'Transaction Name',
+    // Save a user to the test db and create new Transaction
+    user.save(function () {
+      transaction = {
+        name: 'Transaction Name',
         to: 'other@example.com',
         value: 100,
         kind: 'pay',
         date: '1988-05-09'
-			};
+      };
 
       friend.save(done);
-		});
-	});
+    });
+  });
 
-	it('should be able to save Transaction instance if logged in', function(done) {
-		agent.post('/auth/signin')
-			.send(credentials)
-			.expect(200)
-			.end(function(signinErr, signinRes) {
-				// Handle signin error
-				if (signinErr) done(signinErr);
+  it('should be able to save Transaction instance if logged in', function (done) {
+    agent.post('/auth/signin')
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) done(signinErr);
 
-				// Get the userId
-				var userId = user.id;
+        // Get the userId
+        var userId = user.id;
 
-				// Save a new Transaction
-				agent.post('/transactions')
-					.send(transaction)
-					.expect(200)
-					.end(function(transactionSaveErr, transactionSaveRes) {
-						// Handle Transaction save error
-						if (transactionSaveErr) done(transactionSaveErr);
+        // Save a new Transaction
+        agent.post('/transactions')
+          .send(transaction)
+          .expect(200)
+          .end(function (transactionSaveErr, transactionSaveRes) {
+            // Handle Transaction save error
+            if (transactionSaveErr) done(transactionSaveErr);
 
-						// Get a list of Transactions
-						agent.get('/transactions')
-							.end(function(transactionsGetErr, transactionsGetRes) {
-								// Handle Transaction save error
-								if (transactionsGetErr) done(transactionsGetErr);
+            // Get a list of Transactions
+            agent.get('/transactions')
+              .end(function (transactionsGetErr, transactionsGetRes) {
+                // Handle Transaction save error
+                if (transactionsGetErr) done(transactionsGetErr);
 
-								// Get Transactions list
-								var transactions = transactionsGetRes.body;
+                // Get Transactions list
+                var transactions = transactionsGetRes.body;
 
-								// Set assertions
-								(transactions[0].user._id).should.equal(userId);
-								(transactions[0].name).should.match('Transaction Name');
+                // Set assertions
+                (transactions[0].user._id).should.equal(userId);
+                (transactions[0].name).should.match('Transaction Name');
 
-								// Call the assertion callback
-								done();
-							});
-					});
-			});
-	});
+                // Call the assertion callback
+                done();
+              });
+          });
+      });
+  });
 
-	it('should not be able to save Transaction instance if not logged in', function(done) {
-		agent.post('/transactions')
-			.send(transaction)
-			.expect(401)
-			.end(function(transactionSaveErr, transactionSaveRes) {
-				// Call the assertion callback
-				done(transactionSaveErr);
-			});
-	});
+  it('should not be able to save Transaction instance if not logged in', function (done) {
+    agent.post('/transactions')
+      .send(transaction)
+      .expect(401)
+      .end(function (transactionSaveErr, transactionSaveRes) {
+        // Call the assertion callback
+        done(transactionSaveErr);
+      });
+  });
 
-	it('should not be able to save Transaction instance if no name is provided', function(done) {
-		// Invalidate name field
-		transaction.name = '';
+  it('should not be able to save Transaction instance if no name is provided', function (done) {
+    // Invalidate name field
+    transaction.name = '';
 
-		agent.post('/auth/signin')
-			.send(credentials)
-			.expect(200)
-			.end(function(signinErr, signinRes) {
-				// Handle signin error
-				if (signinErr) done(signinErr);
+    agent.post('/auth/signin')
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) done(signinErr);
 
-				// Get the userId
-				var userId = user.id;
+        // Get the userId
+        var userId = user.id;
 
-				// Save a new Transaction
-				agent.post('/transactions')
-					.send(transaction)
-					.expect(400)
-					.end(function(transactionSaveErr, transactionSaveRes) {
-						// Set message assertion
-						(transactionSaveRes.body.message).should.match('Please fill Transaction name');
-						
-						// Handle Transaction save error
-						done(transactionSaveErr);
-					});
-			});
-	});
+        // Save a new Transaction
+        agent.post('/transactions')
+          .send(transaction)
+          .expect(400)
+          .end(function (transactionSaveErr, transactionSaveRes) {
+            // Set message assertion
+            (transactionSaveRes.body.message).should.match('Please fill Transaction name');
 
-	it('should be able to update Transaction instance if signed in', function(done) {
-		agent.post('/auth/signin')
-			.send(credentials)
-			.expect(200)
-			.end(function(signinErr, signinRes) {
-				// Handle signin error
-				if (signinErr) done(signinErr);
+            // Handle Transaction save error
+            done(transactionSaveErr);
+          });
+      });
+  });
 
-				// Get the userId
-				var userId = user.id;
+  it('should be able to update Transaction instance if signed in', function (done) {
+    agent.post('/auth/signin')
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) done(signinErr);
 
-				// Save a new Transaction
-				agent.post('/transactions')
-					.send(transaction)
-					.expect(200)
-					.end(function(transactionSaveErr, transactionSaveRes) {
-						// Handle Transaction save error
-						if (transactionSaveErr) done(transactionSaveErr);
+        // Get the userId
+        var userId = user.id;
 
-						// Update Transaction name
-						transaction.name = 'WHY YOU GOTTA BE SO MEAN?';
+        // Save a new Transaction
+        agent.post('/transactions')
+          .send(transaction)
+          .expect(200)
+          .end(function (transactionSaveErr, transactionSaveRes) {
+            // Handle Transaction save error
+            if (transactionSaveErr) done(transactionSaveErr);
 
-						// Update existing Transaction
-						agent.put('/transactions/' + transactionSaveRes.body._id)
-							.send(transaction)
-							.expect(200)
-							.end(function(transactionUpdateErr, transactionUpdateRes) {
-								// Handle Transaction update error
-								if (transactionUpdateErr) done(transactionUpdateErr);
+            // Update Transaction name
+            transaction.name = 'WHY YOU GOTTA BE SO MEAN?';
 
-								// Set assertions
-								(transactionUpdateRes.body._id).should.equal(transactionSaveRes.body._id);
-								(transactionUpdateRes.body.name).should.match('WHY YOU GOTTA BE SO MEAN?');
+            // Update existing Transaction
+            agent.put('/transactions/' + transactionSaveRes.body._id)
+              .send(transaction)
+              .expect(200)
+              .end(function (transactionUpdateErr, transactionUpdateRes) {
+                // Handle Transaction update error
+                if (transactionUpdateErr) done(transactionUpdateErr);
 
-								// Call the assertion callback
-								done();
-							});
-					});
-			});
-	});
+                // Set assertions
+                (transactionUpdateRes.body._id).should.equal(transactionSaveRes.body._id);
+                (transactionUpdateRes.body.name).should.match('WHY YOU GOTTA BE SO MEAN?');
 
-	it('should not be able to get a list of Transactions if not signed in', function(done) {
-		// Create new Transaction model instance
-		var transactionObj = new Transaction(transaction);
+                // Call the assertion callback
+                done();
+              });
+          });
+      });
+  });
 
-		// Save the Transaction
-		transactionObj.save(function() {
-			// Request Transactions
-			request(app).get('/transactions')
+  it('should not be able to get a list of Transactions if not signed in', function (done) {
+    // Create new Transaction model instance
+    var transactionObj = new Transaction(transaction);
+
+    // Save the Transaction
+    transactionObj.save(function () {
+      // Request Transactions
+      request(app).get('/transactions')
         .expect(401)
-        .end(function(transactionSaveErr, transactionSaveRes) {
+        .end(function (transactionSaveErr, transactionSaveRes) {
           // Call the assertion callback
           done(transactionSaveErr);
         });
-		});
-	});
+    });
+  });
 
-  it('should not be able to get others Transactions', function(done) {
+  it('should not be able to get others Transactions', function (done) {
     var transactionFriend = new Transaction({
       user: friend,
       name: 'Transaction Name',
@@ -203,16 +203,16 @@ describe('Transaction CRUD tests', function() {
       kind: 'pay'
     });
 
-    transactionFriend.save(function() {
+    transactionFriend.save(function () {
       agent.post('/auth/signin')
         .send(credentials)
         .expect(200)
-        .end(function(signinErr, signinRes) {
+        .end(function (signinErr, signinRes) {
           // Handle signin error
           if (signinErr) done(signinErr);
 
           agent.get('/transactions')
-            .end(function(req, res) {
+            .end(function (req, res) {
               res.body.should.be.an.Array.with.lengthOf(0);
               done();
             });
@@ -220,7 +220,7 @@ describe('Transaction CRUD tests', function() {
     });
   });
 
-  it('should be able to get Transactions to me', function(done) {
+  it('should be able to get Transactions to me', function (done) {
     var transactionFriend = new Transaction({
       user: friend,
       name: 'Transaction Name',
@@ -229,16 +229,16 @@ describe('Transaction CRUD tests', function() {
       kind: 'pay'
     });
 
-    transactionFriend.save(function() {
+    transactionFriend.save(function () {
       agent.post('/auth/signin')
         .send(credentials)
         .expect(200)
-        .end(function(signinErr, signinRes) {
+        .end(function (signinErr, signinRes) {
           // Handle signin error
           if (signinErr) done(signinErr);
 
           agent.get('/transactions')
-            .end(function(req, res) {
+            .end(function (req, res) {
               res.body.should.be.an.Array.with.lengthOf(1);
               done();
             });
@@ -246,7 +246,7 @@ describe('Transaction CRUD tests', function() {
     });
   });
 
-  it('should be able to get my Transactions', function(done) {
+  it('should be able to get my Transactions', function (done) {
     var transactionFriend = new Transaction({
       user: user,
       name: 'Transaction Name',
@@ -255,16 +255,16 @@ describe('Transaction CRUD tests', function() {
       kind: 'pay'
     });
 
-    transactionFriend.save(function() {
+    transactionFriend.save(function () {
       agent.post('/auth/signin')
         .send(credentials)
         .expect(200)
-        .end(function(signinErr, signinRes) {
+        .end(function (signinErr, signinRes) {
           // Handle signin error
           if (signinErr) done(signinErr);
 
           agent.get('/transactions')
-            .end(function(req, res) {
+            .end(function (req, res) {
               res.body.should.be.an.Array.with.lengthOf(1);
               done();
             });
@@ -272,84 +272,84 @@ describe('Transaction CRUD tests', function() {
     });
   });
 
-	it('should not be able to get a single Transaction if not signed in', function(done) {
-		// Create new Transaction model instance
-		var transactionObj = new Transaction(transaction);
+  it('should not be able to get a single Transaction if not signed in', function (done) {
+    // Create new Transaction model instance
+    var transactionObj = new Transaction(transaction);
 
-		// Save the Transaction
-		transactionObj.save(function() {
-			request(app).get('/transactions/' + transactionObj._id)
+    // Save the Transaction
+    transactionObj.save(function () {
+      request(app).get('/transactions/' + transactionObj._id)
         .expect(401)
-        .end(function(transactionSaveErr, transactionSaveRes) {
+        .end(function (transactionSaveErr, transactionSaveRes) {
           // Call the assertion callback
           done(transactionSaveErr);
         });
-		});
-	});
+    });
+  });
 
-	it('should be able to delete Transaction instance if signed in', function(done) {
-		agent.post('/auth/signin')
-			.send(credentials)
-			.expect(200)
-			.end(function(signinErr, signinRes) {
-				// Handle signin error
-				if (signinErr) done(signinErr);
+  it('should be able to delete Transaction instance if signed in', function (done) {
+    agent.post('/auth/signin')
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) done(signinErr);
 
-				// Get the userId
-				var userId = user.id;
+        // Get the userId
+        var userId = user.id;
 
-				// Save a new Transaction
-				agent.post('/transactions')
-					.send(transaction)
-					.expect(200)
-					.end(function(transactionSaveErr, transactionSaveRes) {
-						// Handle Transaction save error
-						if (transactionSaveErr) done(transactionSaveErr);
+        // Save a new Transaction
+        agent.post('/transactions')
+          .send(transaction)
+          .expect(200)
+          .end(function (transactionSaveErr, transactionSaveRes) {
+            // Handle Transaction save error
+            if (transactionSaveErr) done(transactionSaveErr);
 
-						// Delete existing Transaction
-						agent.delete('/transactions/' + transactionSaveRes.body._id)
-							.send(transaction)
-							.expect(200)
-							.end(function(transactionDeleteErr, transactionDeleteRes) {
-								// Handle Transaction error error
-								if (transactionDeleteErr) done(transactionDeleteErr);
+            // Delete existing Transaction
+            agent.delete('/transactions/' + transactionSaveRes.body._id)
+              .send(transaction)
+              .expect(200)
+              .end(function (transactionDeleteErr, transactionDeleteRes) {
+                // Handle Transaction error error
+                if (transactionDeleteErr) done(transactionDeleteErr);
 
-								// Set assertions
-								(transactionDeleteRes.body._id).should.equal(transactionSaveRes.body._id);
+                // Set assertions
+                (transactionDeleteRes.body._id).should.equal(transactionSaveRes.body._id);
 
-								// Call the assertion callback
-								done();
-							});
-					});
-			});
-	});
+                // Call the assertion callback
+                done();
+              });
+          });
+      });
+  });
 
-	it('should not be able to delete Transaction instance if not signed in', function(done) {
-		// Set Transaction user 
-		transaction.user = user;
+  it('should not be able to delete Transaction instance if not signed in', function (done) {
+    // Set Transaction user
+    transaction.user = user;
 
-		// Create new Transaction model instance
-		var transactionObj = new Transaction(transaction);
+    // Create new Transaction model instance
+    var transactionObj = new Transaction(transaction);
 
-		// Save the Transaction
-		transactionObj.save(function() {
-			// Try deleting Transaction
-			request(app).delete('/transactions/' + transactionObj._id)
-			.expect(401)
-			.end(function(transactionDeleteErr, transactionDeleteRes) {
-				// Set message assertion
-				(transactionDeleteRes.body.message).should.match('User is not logged in');
+    // Save the Transaction
+    transactionObj.save(function () {
+      // Try deleting Transaction
+      request(app).delete('/transactions/' + transactionObj._id)
+        .expect(401)
+        .end(function (transactionDeleteErr, transactionDeleteRes) {
+          // Set message assertion
+          (transactionDeleteRes.body.message).should.match('User is not logged in');
 
-				// Handle Transaction error error
-				done(transactionDeleteErr);
-			});
+          // Handle Transaction error error
+          done(transactionDeleteErr);
+        });
 
-		});
-	});
+    });
+  });
 
-	afterEach(function(done) {
-		User.remove().exec();
-		Transaction.remove().exec();
-		done();
-	});
+  afterEach(function (done) {
+    User.remove().exec();
+    Transaction.remove().exec();
+    done();
+  });
 });

@@ -7,13 +7,16 @@
             <fieldset>
                 <div class="form-group">
                     <label class="control-label" for="name">Nome *</label>
+
                     <div class="controls">
-                        <input type="text" data-ng-model="name" id="name" class="form-control" placeholder="Name" required>
+                        <input type="text" data-ng-model="name" id="name" class="form-control" placeholder="Name"
+                               required>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="control-label" for="to">E-mail do amigo</label>
+
                     <div class="controls">
                         <input type="email" data-ng-model="to" id="to" class="form-control" placeholder="Friend email">
                     </div>
@@ -21,6 +24,7 @@
 
                 <div class="form-group">
                     <label class="control-label" for="kind">Tipo *</label>
+
                     <div class="controls">
                         <select data-ng-model="kind" id="kind" class="form-control" required>
                             <option value="pay">Pagar</option>
@@ -31,13 +35,16 @@
 
                 <div class="form-group">
                     <label class="control-label" for="value">Valor *</label>
+
                     <div class="controls">
-                        <input type="number" data-ng-model="value" id="value" class="form-control" placeholder="10.50" required>
+                        <input type="number" data-ng-model="value" id="value" class="form-control" placeholder="10.50"
+                               required>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="control-label" for="value">Quando ocorreu</label>
+
                     <div class="controls">
                         <input type="date" data-ng-model="date" id="date" class="form-control" placeholder="yyyy-MM-dd">
                     </div>
@@ -45,17 +52,19 @@
 
                 <div class="form-group">
                     <label class="control-label" for="value">Vencimento</label>
+
                     <div class="controls">
-                        <input type="date" data-ng-model="dueDate" id="dueDate" class="form-control" placeholder="yyyy-MM-dd">
+                        <input type="date" data-ng-model="dueDate" id="dueDate" class="form-control"
+                               placeholder="yyyy-MM-dd">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <input type="submit" class="btn btn-default">
                 </div>
-				<div data-ng-show="error" class="text-danger">
-					<strong data-ng-bind="error"></strong>
-				</div>
+                <div data-ng-show="error" class="text-danger">
+                    <strong data-ng-bind="error"></strong>
+                </div>
             </fieldset>
         </form>
     </div>

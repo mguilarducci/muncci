@@ -4,10 +4,10 @@
  * Module dependencies.
  */
 var should = require('should'),
-	mongoose = require('mongoose'),
+  mongoose = require('mongoose'),
   moment = require('moment'),
-	User = mongoose.model('User'),
-	Transaction = mongoose.model('Transaction');
+  User = mongoose.model('User'),
+  Transaction = mongoose.model('Transaction');
 
 /**
  * Globals
@@ -17,17 +17,17 @@ var user, friend, transaction;
 /**
  * Unit tests
  */
-describe('Transaction Model Unit Tests:', function() {
-	beforeEach(function(done) {
-		user = new User({
-			firstName: 'Full',
-			lastName: 'Name',
-			displayName: 'Full Name',
-			email: 'test@test.com',
-			username: 'username',
-			password: 'password',
+describe('Transaction Model Unit Tests:', function () {
+  beforeEach(function (done) {
+    user = new User({
+      firstName: 'Full',
+      lastName: 'Name',
+      displayName: 'Full Name',
+      email: 'test@test.com',
+      username: 'username',
+      password: 'password',
       provider: 'local'
-		});
+    });
 
     friend = new User({
       firstName: 'Full',
@@ -44,62 +44,62 @@ describe('Transaction Model Unit Tests:', function() {
       }
     });
 
-    user.save(function() {
-			transaction = new Transaction({
-				name: 'Transaction Name',
-				user: user,
+    user.save(function () {
+      transaction = new Transaction({
+        name: 'Transaction Name',
+        user: user,
         to: 'friend@test.com',
         value: 100,
         kind: 'pay',
         date: moment('1988-05-09'),
         dueDate: moment('1988-05-09')
-			});
+      });
 
       friend.save(done);
-			// done();
-		});
-	});
+      // done();
+    });
+  });
 
-	describe('Method Save', function() {
-		it('should be able to save without problems', function(done) {
-			return transaction.save(function(err) {
-				should.not.exist(err);
-				done();
-			});
-		});
+  describe('Method Save', function () {
+    it('should be able to save without problems', function (done) {
+      return transaction.save(function (err) {
+        should.not.exist(err);
+        done();
+      });
+    });
 
-		it('should be able to show an error when try to save without name', function(done) {
-			transaction.name = '';
+    it('should be able to show an error when try to save without name', function (done) {
+      transaction.name = '';
 
-			return transaction.save(function(err) {
-				should.exist(err);
-				done();
-			});
-		});
+      return transaction.save(function (err) {
+        should.exist(err);
+        done();
+      });
+    });
 
-    it('should be able to show an error when try to save without value', function(done) {
+    it('should be able to show an error when try to save without value', function (done) {
       transaction.value = null;
 
-      return transaction.save(function(err) {
+      return transaction.save(function (err) {
         should.exist(err);
         done();
       });
     });
 
-    it('should be able to show an error when try to save without kind', function(done) {
+    it('should be able to show an error when try to save without kind', function (done) {
       transaction.kind = '';
 
-      return transaction.save(function(err) {
+      return transaction.save(function (err) {
         should.exist(err);
         done();
       });
     });
-	});
+  });
 
-	afterEach(function(done) { 
-		Transaction.remove().exec();
-		User.remove().exec();
+  afterEach(function (done) {
+    Transaction.remove().exec();
+    User.remove().exec();
 
-		done();
-	});
+    done();
+  });
 });

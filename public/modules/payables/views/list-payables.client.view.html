@@ -3,14 +3,16 @@
         <h1>Payables</h1>
     </div>
     <div class="list-group">
-        <li data-ng-repeat="payable in payables" class="list-group-item {{rowClass(payable)}}" data-ng-show="payable.total != 0">
-		    <h4 class="list-group-item-heading">
+        <li data-ng-repeat="payable in payables" class="list-group-item {{rowClass(payable)}}"
+            data-ng-show="payable.total != 0">
+            <h4 class="list-group-item-heading">
                 {{ payable._id.to }}
-		    </h4>
+            </h4>
 
             <p class="list-group-item-text" data-ng-show="payable.total > 0">
                 Tenho que receber R${{payable.total}} :D
             </p>
+
             <p class="list-group-item-text" data-ng-show="payable.total < 0">
                 Tenho que pagar R${{payable.total * -1}} :(
             </p>

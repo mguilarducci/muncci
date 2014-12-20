@@ -13,8 +13,8 @@ var should = require('should'),
  */
 var credentials, user, friend, transaction;
 
-describe('Payables tests', function() {
-  beforeEach(function(done) {
+describe('Payables tests', function () {
+  beforeEach(function (done) {
     // Create user credentials
     credentials = {
       username: 'username',
@@ -47,7 +47,7 @@ describe('Payables tests', function() {
     user.save(done);
   });
 
-  it('should not be able to list payables if not logged in', function(done) {
+  it('should not be able to list payables if not logged in', function (done) {
     agent.get('/payables')
       .expect(401)
       .end(done);
@@ -57,7 +57,7 @@ describe('Payables tests', function() {
 
   it('should not be able to list payables of other person');
 
-  afterEach(function(done) {
+  afterEach(function (done) {
     User.remove().exec();
     Transaction.remove().exec();
     done();

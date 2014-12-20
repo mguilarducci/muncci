@@ -4,22 +4,25 @@
     </div>
     <div class="list-group">
         <li data-ng-repeat="transaction in transactions"
-           data-ng-href="#!/transactions/{{transaction._id}}"
-           class="list-group-item {{rowClass(transaction, authentication.user)}}">
+            data-ng-href="#!/transactions/{{transaction._id}}"
+            class="list-group-item {{rowClass(transaction, authentication.user)}}">
 
 
             <span class="badge">{{transaction.status}} by {{transaction.updatedBy.displayName}}</span>
 
             <div class="list-group-item-text">
-                <a class="btn btn-primary" data-ng-click="accept(transaction);" data-ng-show="canAccept(transaction, authentication.user)">
+                <a class="btn btn-primary" data-ng-click="accept(transaction);"
+                   data-ng-show="canAccept(transaction, authentication.user)">
                     <i class="glyphicon glyphicon-thumbs-up"></i>
                 </a>
 
-                <a class="btn btn-danger" data-ng-click="revoke(transaction);" data-ng-show="canRevoke(transaction, authentication.user)">
+                <a class="btn btn-danger" data-ng-click="revoke(transaction);"
+                   data-ng-show="canRevoke(transaction, authentication.user)">
                     <i class="glyphicon glyphicon-thumbs-down"></i>
                 </a>
 
-                <a class="btn btn-success" data-ng-click="pay(transaction);" data-ng-show="canPay(transaction, authentication.user)">
+                <a class="btn btn-success" data-ng-click="pay(transaction);"
+                   data-ng-show="canPay(transaction, authentication.user)">
                     <i class="glyphicon glyphicon-check"></i> Pago!
                 </a>
 
@@ -29,21 +32,20 @@
             </div>
 
             <small class="list-group-item-text">
-				Posted on
-				<span data-ng-bind="transaction.created | date:'medium'"></span>
-				by
-				<span data-ng-bind="transaction.user.displayName"></span>
-			</small>
-		    <h4 class="list-group-item-heading" data-ng-bind="title(transaction, authentication.user)"></h4>
-			<!--<h4 class="list-group-item-heading">{{transaction.kind}} R${{transaction.value}} a {{transaction.to}}</h4>-->
+                Posted on
+                <span data-ng-bind="transaction.created | date:'medium'"></span>
+                by
+                <span data-ng-bind="transaction.user.displayName"></span>
+            </small>
+            <h4 class="list-group-item-heading" data-ng-bind="title(transaction, authentication.user)"></h4>
+            <!--<h4 class="list-group-item-heading">{{transaction.kind}} R${{transaction.value}} a {{transaction.to}}</h4>-->
 
             <p class="list-group-item-text" data-ng-bind="transaction.name"></p>
-
 
 
         </li>
     </div>
     <div class="alert alert-warning text-center" data-ng-hide="!transactions.$resolved || transactions.length">
-    	No Transactions yet, why don't you <a href="/#!/transactions/create">create one</a>?
+        No Transactions yet, why don't you <a href="/#!/transactions/create">create one</a>?
     </div>
 </section>

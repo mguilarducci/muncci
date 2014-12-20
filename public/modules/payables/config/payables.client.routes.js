@@ -2,7 +2,7 @@
 
 //Setting up route
 angular.module('payables').config(['$stateProvider',
-  function($stateProvider) {
+  function ($stateProvider) {
     // Payables state routing
     $stateProvider.
       state('listPayables', {

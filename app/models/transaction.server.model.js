@@ -7,7 +7,7 @@ var mongoose = require('mongoose'),
   moment = require('moment'),
   async = require('async'),
   _ = require('lodash'),
-	Schema = mongoose.Schema;
+  Schema = mongoose.Schema;
 
 var statusList = 'created revoked accepted paid'.split(' '),
   kinds = 'pay receive'.split(' ');
@@ -16,28 +16,28 @@ var statusList = 'created revoked accepted paid'.split(' '),
  * Transaction Schema
  */
 var TransactionSchema = new Schema({
-	name: {
-		type: String,
-		default: '',
-		required: 'Please fill Transaction name',
-		trim: true
-	},
-	created: {
-		type: Date,
-		default: Date.now
-	},
+  name: {
+    type: String,
+    default: '',
+    required: 'Please fill Transaction name',
+    trim: true
+  },
+  created: {
+    type: Date,
+    default: Date.now
+  },
   updated: {
     type: Date,
     default: Date.now
   },
-	updatedBy: {
-		type: Schema.ObjectId,
-		ref: 'User'
-	},
+  updatedBy: {
+    type: Schema.ObjectId,
+    ref: 'User'
+  },
   user: {
-		type: Schema.ObjectId,
-		ref: 'User'
-	},
+    type: Schema.ObjectId,
+    ref: 'User'
+  },
   friend: {
     type: Schema.ObjectId,
     ref: 'User'
@@ -60,17 +60,17 @@ var TransactionSchema = new Schema({
   }
 });
 
-TransactionSchema.pre('save', function(next) {
+TransactionSchema.pre('save', function (next) {
   this.updated = moment();
   next();
 });
 
-TransactionSchema.statics.findMy = function(user, where, cb) {
+TransactionSchema.statics.findMy = function (user, where, cb) {
   var and = where,
     or = [
-    { user: user },
-    { 'to': user.email }
-  ];
+      { user: user },
+      { 'to': user.email }
+    ];
 
   if (_.isFunction(where)) {
     cb = where;
