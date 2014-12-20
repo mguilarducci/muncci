@@ -22,19 +22,17 @@ exports.list = function(req, res) {
     .group({
       _id: {
         friend: {
-          $cond: {
-            if: { $eq: ['$friend', req.user._id] },
-            then: '$user',
-            else: {
-              $ifNull: ['$friend', '$to']
-            }
-          }
+          $cond: [
+            { $eq: ['$friend', req.user._id] },
+            '$user',
+            { $ifNull: ['$friend', '$to'] }
+          ]
         }
       },
       total: {
         $sum: {
-          $cond: {
-            if: {
+          $cond: [
+            {
               $or: [
                 { $and: [
                   { $eq: ['$user', req.user._id] },
@@ -46,9 +44,9 @@ exports.list = function(req, res) {
                 ]}
               ]
             },
-            then: '$value',
-            else: { $multiply: ['$value', -1] }
-          }
+            '$value',
+            { $multiply: ['$value', -1] }
+          ]
         }
       },
       average: { $avg: '$value' },
