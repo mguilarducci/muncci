@@ -61,6 +61,7 @@ exports.list = function (req, res) {
         var payables = [];
 
         async.each(result, function (payable, done) {
+          // horrivel!
           User.findById(payable._id.friend).select('id displayName').exec(function (err, friend) {
             if (friend) {
               payable._id.to = friend.displayName;
